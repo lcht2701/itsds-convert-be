@@ -20,7 +20,7 @@ class BaseController extends Controller
         ];
 
         if (!empty($data)) {
-            $response['data'] = $data;
+            $response['result'] = $data;
         }
 
         return response()->json($response, $code);
@@ -31,7 +31,7 @@ class BaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function sendError($error, $code = 404, $errorMessages = [])
+    public function sendBadRequest($error, $errorMessages = [])
     {
         $response = [
             'success' => false,
@@ -39,9 +39,9 @@ class BaseController extends Controller
         ];
 
         if (!empty($errorMessages)) {
-            $response['data'] = $errorMessages;
+            $response['result'] = $errorMessages;
         }
 
-        return response()->json($response, $code);
+        return response()->json($response, 400);
     }
 }
