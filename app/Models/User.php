@@ -22,6 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -45,5 +46,55 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Check if the user is a customer.
+     *
+     * @return bool
+     */
+    public function isCustomer(): bool
+    {
+        return $this->role === 0;
+    }
+
+    /**
+     * Check if the user is a company admin.
+     *
+     * @return bool
+     */
+    public function isCompanyAdmin(): bool
+    {
+        return $this->role === 1;
+    }
+
+    /**
+     * Check if the user is a company admin.
+     *
+     * @return bool
+     */
+    public function isTechnician(): bool
+    {
+        return $this->role === 2;
+    }
+
+    /**
+     * Check if the user is a manager.
+     *
+     * @return bool
+     */
+    public function isManager(): bool
+    {
+        return $this->role === 3;
+    }
+
+    /**
+     * Check if the user is an administrator.
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 4;
     }
 }
