@@ -6,6 +6,7 @@ use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreUserRequest extends FormRequest
 {
@@ -27,9 +28,15 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique(User::class)->ignore($this->user()->id)],
-            'password' => ['required', 'string', 'password', 'regex:/[0-9]/'],
-            'role' => ['required', 'enum:' . UserRole::class],
-            'phone' => ['required', 'numeric', 'min:10', 'max:15'],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'regex:/[0-9]/',
+                'regex:/[a-zA-Z]/',
+            ],
+            'role' => [new Enum(UserRole::class)],
+            'phone' => ['required', 'string', 'regex:/^\d+$/', 'min:10', 'max:15'],
         ];
     }
 }
