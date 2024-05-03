@@ -67,4 +67,17 @@ abstract class Controller
 
         return response()->json($response, 404);
     }
+
+    public function sendInternalError($message, $errorMessages = [])
+    {
+        $response = [
+            'success' => false,
+            'message' => $message,
+        ];
+        if (!empty($errorMessages)) {
+            $response['result'] = $errorMessages;
+        }
+
+        return response()->json($response, 500);
+    }
 }

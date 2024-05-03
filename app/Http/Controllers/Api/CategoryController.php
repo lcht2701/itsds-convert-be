@@ -8,7 +8,9 @@ use App\Http\Resources\Collections\GenericCollection;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use Exception;
 use Gate;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CategoryController extends Controller
 {
@@ -43,7 +45,13 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return $this->sendResponse("Get Category Detail", 200, new CategoryResource($category));
+        try {
+            return $this->sendResponse("Get Category Detail", 200, new CategoryResource($category));
+        } catch (NotFoundHttpException $ex) {
+            return $this->sendNotFound("Category is not exist or already deleted");
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
+        }
     }
 
     /**
@@ -51,13 +59,19 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        if (Gate::denies('role.manager')) {
-            return $this->sendUnauthorized('You do not have permission to do this action');
-        }
+        try {
+            if (Gate::denies('role.manager')) {
+                return $this->sendUnauthorized('You do not have permission to do this action');
+            }
 
-        $data = $request->validated();
-        $result = $category::update($data);
-        return $this->sendResponse("Category Updated", 200, new CategoryResource($result));
+            $data = $request->validated();
+            $category->update($data);
+            return $this->sendResponse("Category Updated", 200, new CategoryResource($category));
+        } catch (NotFoundHttpException $ex) {
+            return $this->sendNotFound("Category is not exist or already deleted");
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
+        }
     }
 
     /**
@@ -65,11 +79,17 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        if (Gate::denies('role.manager')) {
-            return $this->sendUnauthorized('You do not have permission to do this action');
-        }
+        try {
+            if (Gate::denies('role.manager')) {
+                return $this->sendUnauthorized('You do not have permission to do this action');
+            }
 
-        $category->delete();
-        return $this->sendResponse("Category Deleted", 200);
+            $category->delete();
+            return $this->sendResponse("Category Deleted", 200);
+        } catch (NotFoundHttpException $ex) {
+            return $this->sendNotFound("Category is not exist or already deleted");
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
+        }
     }
 }

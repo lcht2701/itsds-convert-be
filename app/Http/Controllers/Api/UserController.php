@@ -59,7 +59,9 @@ class UserController extends Controller
         if (Gate::denies('role.admin')) {
             return $this->sendUnauthorized('You do not have permission to do this action');
         }
-
+        if ($user->trashed()) {
+            return $this->sendNotFound("User is not found or already deleted");
+        }
         $data = $request->validated();
         // Check if a new password is provided
         if (!empty($data['password'])) {
@@ -79,7 +81,9 @@ class UserController extends Controller
         if (Gate::denies('role.admin')) {
             return $this->sendUnauthorized('You do not have permission to do this action');
         }
-        $name = $user->name;
+        if ($user->trashed()) {
+            return $this->sendNotFound("User is not found or already deleted");
+        }
         $user->delete();
         return $this->sendResponse("User Deleted", 200);
     }
