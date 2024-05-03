@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserProfileRequest;
 use App\Http\Resources\Collections\GenericCollection;
-use App\Http\Resources\Collections\UserCollection;
 use App\Http\Resources\UserProfileResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -25,7 +24,7 @@ class UserController extends Controller
         $users = $query
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        return $this->sendResponse('Get User List', 200, new GenericCollection(UserResource::collection($users)));
+        return $this->sendResponse('Get User List', 200, new GenericCollection($users, UserResource::class));
     }
 
     /**
@@ -80,8 +79,12 @@ class UserController extends Controller
         return $this->sendResponse("User Deleted", 200);
     }
 
-    public function showProfile(User $user)
+    public function showProfile()
     {
+        $user = \Auth::user();
+        if (!$user) {
+            return $this->sendUnauthorized();
+        }
         return $this->sendResponse("Get User Profile", 200, new UserProfileResource($user));
     }
 

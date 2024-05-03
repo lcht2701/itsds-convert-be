@@ -4,13 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
-use App\Http\Resources\Collections\CategoryCollection;
 use App\Http\Resources\Collections\GenericCollection;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use Gate;
-use Illuminate\Auth\Access\AuthorizationException;
 
 class CategoryController extends Controller
 {
@@ -23,7 +21,7 @@ class CategoryController extends Controller
         $categories = $query
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        return $this->sendResponse("Get Category List", 200, new GenericCollection(CategoryResource::collection($categories)));
+        return $this->sendResponse("Get Category List", 200, new GenericCollection($categories, CategoryResource::class));
     }
 
     /**

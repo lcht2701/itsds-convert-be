@@ -2,12 +2,23 @@
 
 namespace App\Http\Resources\Collections;
 
-use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class GenericCollection extends ResourceCollection
 {
+    /**
+     * Create a new resource instance.
+     *
+     * @param mixed $resource
+     * @param string $collects
+     */
+    public function __construct($resource, $collects)
+    {
+        $this->collects = $collects;
+        parent::__construct($resource);
+    }
+
     /**
      * Transform the resource collection into an array.
      *
