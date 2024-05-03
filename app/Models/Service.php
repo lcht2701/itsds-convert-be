@@ -9,4 +9,15 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Service extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'category_id'
+    ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
 }
