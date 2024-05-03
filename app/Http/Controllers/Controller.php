@@ -48,13 +48,23 @@ abstract class Controller
         return response()->json($response, 400);
     }
 
-    public function sendUnauthorized()
+    public function sendUnauthorized($message)
     {
         $response = [
             'success' => false,
-            'message' => 'You do not have permission to do this action',
+            'message' => $message,
         ];
 
         return response()->json($response, 403);
+    }
+
+    public function sendNotFound($message)
+    {
+        $response = [
+            'success' => false,
+            'message' => $message,
+        ];
+
+        return response()->json($response, 404);
     }
 }

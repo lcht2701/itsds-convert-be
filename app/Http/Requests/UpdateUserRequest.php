@@ -26,18 +26,18 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', Rule::unique(User::class)->ignore($this->user()->id)],
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'email' => ['sometimes', 'required', 'email', Rule::unique(User::class, 'email')->ignore($this->route('user'))],
             'password' => [
-                'required',
+                'nullable',
                 'string',
                 'min:8',
                 'regex:/[0-9]/',
                 'regex:/[a-zA-Z]/',
             ],
             'role' => [new Enum(UserRole::class)],
-            'phone' => ['required', 'string', 'regex:/^\d+$/', 'min:10', 'max:15'],
-            'is_active' => ['required', 'boolean']
+            'phone' => ['sometimes', 'required', 'string', 'regex:/^\d+$/', 'min:10', 'max:15'],
+            'is_active' => ['sometimes', 'required', 'boolean']
         ];
     }
 }

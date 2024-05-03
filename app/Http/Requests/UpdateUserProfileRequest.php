@@ -26,9 +26,14 @@ class UpdateUserProfileRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', Rule::unique(User::class)->ignore($this->user()->id)],
-            'password' => ['required', 'string', 'password', 'regex:/[0-9]/'],
-            'phone' => ['required', 'numeric', 'min:10', 'max:15'],
+            'password' => [
+                'nullable',
+                'string',
+                'min:8',
+                'regex:/[0-9]/',
+                'regex:/[a-zA-Z]/',
+            ],
+            'phone' => ['required', 'string', 'min:10', 'max:15'],
         ];
     }
 }

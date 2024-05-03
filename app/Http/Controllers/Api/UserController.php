@@ -33,7 +33,7 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         if (Gate::denies('role.admin')) {
-            return $this->sendUnauthorized();
+            return $this->sendUnauthorized('You do not have permission to do this action');
         }
 
         $data = $request->validated();
@@ -57,13 +57,18 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user)
     {
         if (Gate::denies('role.admin')) {
-            return $this->sendUnauthorized();
+            return $this->sendUnauthorized('You do not have permission to do this action');
         }
 
         $data = $request->validated();
-        $data['password'] = Hash::make($data['password']);
-        $result = $user::update($data);
-        return $this->sendResponse("User Updated", 200, new UserResource($result));
+        // Check if a new password is provided
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']); // Remove password from array if not set
+        }
+        $user->update($data);
+        return $this->sendResponse("User Updated", 200, new UserResource($user));
     }
 
     /**
@@ -72,9 +77,9 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         if (Gate::denies('role.admin')) {
-            return $this->sendUnauthorized();
+            return $this->sendUnauthorized('You do not have permission to do this action');
         }
-
+        $name = $user->name;
         $user->delete();
         return $this->sendResponse("User Deleted", 200);
     }
@@ -83,7 +88,7 @@ class UserController extends Controller
     {
         $user = \Auth::user();
         if (!$user) {
-            return $this->sendUnauthorized();
+            return $this->sendUnauthorized('You do not have permission to do this action');
         }
         return $this->sendResponse("Get User Profile", 200, new UserProfileResource($user));
     }
@@ -91,8 +96,13 @@ class UserController extends Controller
     public function updateProfile(UpdateUserProfileRequest $request, User $user)
     {
         $data = $request->validated();
-        $data['password'] = Hash::make($data['password']);
-        $result = $user::update($data);
-        return $this->sendResponse("User Updated", 200, new UserResource($result));
+        // Check if a new password is provided
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']); // Remove password from array if not set
+        }
+        $user->update($data);
+        return $this->sendResponse("User Updated", 200, new UserResource($user));
     }
 }

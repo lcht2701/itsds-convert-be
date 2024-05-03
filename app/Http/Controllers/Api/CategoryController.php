@@ -30,7 +30,7 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request)
     {
         if (Gate::denies('role.manager')) {
-            return $this->sendUnauthorized();
+            return $this->sendUnauthorized('You do not have permission to do this action');
         }
 
         $data = $request->validated();
@@ -52,7 +52,7 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, Category $category)
     {
         if (Gate::denies('role.manager')) {
-            return $this->sendUnauthorized();
+            return $this->sendUnauthorized('You do not have permission to do this action');
         }
 
         $data = $request->validated();
@@ -66,7 +66,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         if (Gate::denies('role.manager')) {
-            return $this->sendUnauthorized();
+            return $this->sendUnauthorized('You do not have permission to do this action');
         }
 
         $category->delete();
