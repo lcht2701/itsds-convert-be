@@ -10,6 +10,8 @@ use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
 use Exception;
 use Gate;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ServiceController extends Controller
@@ -33,13 +35,14 @@ class ServiceController extends Controller
     public function store(StoreServiceRequest $request)
     {
         try {
-            if (Gate::denies('role.manager')) {
-                return $this->sendUnauthorized('You do not have permission to do this action');
-            }
-
+            Gate::authorize('create', Service::class);
             $data = $request->validated();
             $result = Service::create($data);
             return $this->sendResponse("Service Created", 200, new ServiceResource($result));
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
+            return $this->sendNotFound("Service is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
         }
@@ -52,7 +55,7 @@ class ServiceController extends Controller
     {
         try {
             return $this->sendResponse("Get Service Detail", 200, new ServiceResource($service));
-        } catch (NotFoundHttpException $ex) {
+        } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("service is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
@@ -65,14 +68,13 @@ class ServiceController extends Controller
     public function update(UpdateServiceRequest $request, Service $service)
     {
         try {
-            if (Gate::denies('role.manager')) {
-                return $this->sendUnauthorized('You do not have permission to do this action');
-            }
-
+            Gate::authorize('update', $service);
             $data = $request->validated();
             $service->update($data);
             return $this->sendResponse("Service Updated", 200, new ServiceResource($service));
-        } catch (NotFoundHttpException $ex) {
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Service is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
@@ -85,13 +87,12 @@ class ServiceController extends Controller
     public function destroy(Service $service)
     {
         try {
-            if (Gate::denies('role.manager')) {
-                return $this->sendUnauthorized('You do not have permission to do this action');
-            }
-
+            Gate::authorize('update', $service);
             $service->delete();
             return $this->sendResponse("Service Deleted", 200);
-        } catch (NotFoundHttpException $ex) {
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Service is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);

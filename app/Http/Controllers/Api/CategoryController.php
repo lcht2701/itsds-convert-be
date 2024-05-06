@@ -10,6 +10,8 @@ use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use Exception;
 use Gate;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CategoryController extends Controller
@@ -31,13 +33,16 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        if (Gate::denies('role.manager')) {
-            return $this->sendUnauthorized('You do not have permission to do this action');
+        try {
+            Gate::authorize('create', Category::class);
+            $data = $request->validated();
+            $result = Category::create($data);
+            return $this->sendResponse("Category Created", 200, new CategoryResource($result));
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
         }
-
-        $data = $request->validated();
-        $result = Category::create($data);
-        return $this->sendResponse("Category Created", 200, new CategoryResource($result));
     }
 
     /**
@@ -47,7 +52,7 @@ class CategoryController extends Controller
     {
         try {
             return $this->sendResponse("Get Category Detail", 200, new CategoryResource($category));
-        } catch (NotFoundHttpException $ex) {
+        } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Category is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
@@ -60,14 +65,13 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, Category $category)
     {
         try {
-            if (Gate::denies('role.manager')) {
-                return $this->sendUnauthorized('You do not have permission to do this action');
-            }
-
+            Gate::authorize('update', $category);
             $data = $request->validated();
             $category->update($data);
             return $this->sendResponse("Category Updated", 200, new CategoryResource($category));
-        } catch (NotFoundHttpException $ex) {
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Category is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
@@ -80,13 +84,12 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         try {
-            if (Gate::denies('role.manager')) {
-                return $this->sendUnauthorized('You do not have permission to do this action');
-            }
-
+            Gate::authorize('delete', $category);
             $category->delete();
             return $this->sendResponse("Category Deleted", 200);
-        } catch (NotFoundHttpException $ex) {
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Category is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);

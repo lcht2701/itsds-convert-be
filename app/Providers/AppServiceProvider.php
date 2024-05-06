@@ -2,7 +2,16 @@
 
 namespace App\Providers;
 
+use App\Models\Category;
+use App\Models\Feedback;
+use App\Models\Service;
+use App\Models\TicketSolution;
 use App\Models\User;
+use App\Policies\CategoryPolicy;
+use App\Policies\FeedbackPolicy;
+use App\Policies\ServicePolicy;
+use App\Policies\TicketSolutionPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -23,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerGates();
+        $this->registerPolicies();
         ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
             return config('app.frontend_url') . "/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
         });
@@ -45,5 +55,14 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('role.admin', function (User $user): bool {
             return $user->isAdmin();
         });
+    }
+
+    public function registerPolicies()
+    {
+        Gate::policy(Category::class, CategoryPolicy::class);
+        Gate::policy(Feedback::class, FeedbackPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(TicketSolution::class, TicketSolutionPolicy::class);
+        Gate::policy(Service::class, ServicePolicy::class);
     }
 }

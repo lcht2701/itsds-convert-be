@@ -12,6 +12,8 @@ use App\Http\Requests\UpdateTicketSolutionRequest;
 use Auth;
 use Exception;
 use Gate;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TicketSolutionController extends Controller
@@ -35,15 +37,14 @@ class TicketSolutionController extends Controller
     public function store(StoreTicketSolutionRequest $request)
     {
         try {
-            if (Gate::denies('role.manager') && Gate::denies('role.technician')) {
-                return $this->sendUnauthorized('You do not have permission to do this action');
-            }
-
+            Gate::authorize('create', TicketSolution::class);
             $data = $request->validated();
             $data['created_by_id'] = Auth::user()->id;
             $data['review_date'] = null;
             $result = TicketSolution::create($data);
             return $this->sendResponse("Ticket Solution Created", 200, new TicketSolutionResource($result));
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
         }
@@ -56,7 +57,7 @@ class TicketSolutionController extends Controller
     {
         try {
             return $this->sendResponse("Get Ticket Solution Detail", 200, new TicketSolutionResource($ticketSolution));
-        } catch (NotFoundHttpException $ex) {
+        } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Ticket Solution is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
@@ -69,14 +70,13 @@ class TicketSolutionController extends Controller
     public function update(UpdateTicketSolutionRequest $request, TicketSolution $ticketSolution)
     {
         try {
-            if (Gate::denies('role.manager') && Auth::user()->id === $ticketSolution->created_by_id) {
-                return $this->sendUnauthorized('You do not have permission to do this action');
-            }
+            Gate::authorize('update', $ticketSolution);
             $data = $request->validated();
             $ticketSolution->update($data);
             return $this->sendResponse("Ticket Solution Updated", 200, new TicketSolutionResource($ticketSolution));
-
-        } catch (NotFoundHttpException $ex) {
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Ticket Solution is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
@@ -89,12 +89,12 @@ class TicketSolutionController extends Controller
     public function destroy(TicketSolution $ticketSolution)
     {
         try {
-            if (Gate::denies('role.manager') && Auth::user()->id === $ticketSolution->created_by_id) {
-                return $this->sendUnauthorized('You do not have permission to do this action');
-            }
+            Gate::authorize('delete', $ticketSolution);
             $ticketSolution->delete();
             return $this->sendResponse("Ticket Solution Deleted", 200);
-        } catch (NotFoundHttpException $ex) {
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Ticket Solution is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
@@ -104,13 +104,13 @@ class TicketSolutionController extends Controller
     public function approve(TicketSolution $ticketSolution)
     {
         try {
-            if (Gate::denies('role.manager')) {
-                return $this->sendUnauthorized('You do not have permission to do this action');
-            }
+            Gate::authorize('approve', $ticketSolution);
             $ticketSolution['review_date'] = now();
             $ticketSolution->update();
             return $this->sendResponse("Ticket Solution Approved", 200, new TicketSolutionResource($ticketSolution));
-        } catch (NotFoundHttpException $ex) {
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Ticket Solution is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
@@ -119,13 +119,13 @@ class TicketSolutionController extends Controller
     public function reject(TicketSolution $ticketSolution)
     {
         try {
-            if (Gate::denies('role.manager')) {
-                return $this->sendUnauthorized('You do not have permission to do this action');
-            }
+            Gate::authorize('reject', $ticketSolution);
             $ticketSolution['review_date'] = null;
             $ticketSolution->update();
             return $this->sendResponse("Ticket Solution Rejected", 200, new TicketSolutionResource($ticketSolution));
-        } catch (NotFoundHttpException $ex) {
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Ticket Solution is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);

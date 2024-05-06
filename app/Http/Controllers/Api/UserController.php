@@ -10,8 +10,12 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use Auth;
+use Exception;
 use Gate;
 use Hash;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Controller
 {
@@ -32,15 +36,19 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        if (Gate::denies('role.admin')) {
+        try {
+            Gate::authorize('create', User::class);
+            $data = $request->validated();
+            $data['password'] = Hash::make($data['password']);
+            $data['is_active'] = true; // default active status when new account is created
+            $result = User::create($data);
+            return $this->sendResponse("User Created", 200, new UserResource($result));
+        } catch (AuthorizationException $ex) {
             return $this->sendUnauthorized('You do not have permission to do this action');
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
         }
 
-        $data = $request->validated();
-        $data['password'] = Hash::make($data['password']);
-        $data['is_active'] = true; // default active status when new account is created
-        $result = User::create($data);
-        return $this->sendResponse("User Created", 200, new UserResource($result));
     }
 
     /**
@@ -56,21 +64,24 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user)
     {
-        if (Gate::denies('role.admin')) {
-            return $this->sendUnauthorized('You do not have permission to do this action');
+        try {
+            Gate::authorize('update', $user);
+            $data = $request->validated();
+            // Check if a new password is provided
+            if (!empty($data['password'])) {
+                $data['password'] = Hash::make($data['password']);
+            } else {
+                unset($data['password']); // Remove password from array if not set
+            }
+            $user->update($data);
+            return $this->sendResponse("User Updated", 200, new UserResource($user));
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
+            return $this->sendNotFound("Category is not exist or already deleted");
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
         }
-        if ($user->trashed()) {
-            return $this->sendNotFound("User is not found or already deleted");
-        }
-        $data = $request->validated();
-        // Check if a new password is provided
-        if (!empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        } else {
-            unset($data['password']); // Remove password from array if not set
-        }
-        $user->update($data);
-        return $this->sendResponse("User Updated", 200, new UserResource($user));
     }
 
     /**
@@ -78,19 +89,22 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if (Gate::denies('role.admin')) {
-            return $this->sendUnauthorized('You do not have permission to do this action');
+        try {
+            Gate::authorize('delete', $user);
+            $user->delete();
+            return $this->sendResponse("User Deleted", 200);
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
+            return $this->sendNotFound("Category is not exist or already deleted");
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
         }
-        if ($user->trashed()) {
-            return $this->sendNotFound("User is not found or already deleted");
-        }
-        $user->delete();
-        return $this->sendResponse("User Deleted", 200);
     }
 
     public function showProfile()
     {
-        $user = \Auth::user();
+        $user = Auth::user();
         if (!$user) {
             return $this->sendUnauthorized('You do not have permission to do this action');
         }
@@ -99,14 +113,23 @@ class UserController extends Controller
 
     public function updateProfile(UpdateUserProfileRequest $request, User $user)
     {
-        $data = $request->validated();
-        // Check if a new password is provided
-        if (!empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        } else {
-            unset($data['password']); // Remove password from array if not set
+        try {
+            Gate::authorize('updateProfile', $user);
+            $data = $request->validated();
+            // Check if a new password is provided
+            if (!empty($data['password'])) {
+                $data['password'] = Hash::make($data['password']);
+            } else {
+                unset($data['password']); // Remove password from array if not set
+            }
+            $user->update($data);
+            return $this->sendResponse("User Updated", 200, new UserResource($user));
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
+            return $this->sendNotFound("Category is not exist or already deleted");
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
         }
-        $user->update($data);
-        return $this->sendResponse("User Updated", 200, new UserResource($user));
     }
 }
