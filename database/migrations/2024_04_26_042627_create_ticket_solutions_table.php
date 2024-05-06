@@ -13,12 +13,12 @@ return new class extends Migration {
         Schema::create('ticket_solutions', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('content');
+            $table->string('content')->nullable();
             $table->foreignId('service_id')->constrained('services');
             $table->foreignId('owner_id')->constrained('users');
-            $table->datetime('review_date');
-            $table->string('keyword');
-            $table->foreignId('create_by_id')->constrained('users');
+            $table->datetime('review_date')->nullable();
+            $table->string('keyword')->nullable();
+            $table->foreignId('created_by_id')->constrained('users');
             $table->timestamps();
             $table->softDeletes();
         });
