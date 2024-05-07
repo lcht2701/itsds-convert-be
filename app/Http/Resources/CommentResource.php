@@ -16,11 +16,13 @@ class CommentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'content' => $this->content,
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:m:s'),
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:m:s'),
-            'user' => $this->user,
-            'ticketSolution' => $this->ticketSolution,
+            'ticket_solution_id' => $this->ticket_solution_id,
+            'user_id' => $this->user_id,
+            // 'ticketSolution' => $this->ticketSolution,
         ];
     }
 }

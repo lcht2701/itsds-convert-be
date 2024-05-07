@@ -36,10 +36,12 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCommentRequest $request)
+    public function store(TicketSolution $ticketSolution, StoreCommentRequest $request)
     {
         try {
             $data = $request->validated();
+            $data['user_id'] = \Auth::user()->id;
+            $data['ticket_solution_id'] = $ticketSolution->id;
             $result = $this->commentRepository->create($data);
             return $this->sendResponse("Comment Created", 200, new CommentResource($result));
         } catch (Exception $ex) {
@@ -50,7 +52,7 @@ class CommentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Comment $comment)
+    public function show(TicketSolution $ticketSolution, Comment $comment)
     {
         try {
             $result = $this->commentRepository->find($comment->id);
@@ -65,7 +67,7 @@ class CommentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCommentRequest $request, Comment $comment)
+    public function update(TicketSolution $ticketSolution, UpdateCommentRequest $request, Comment $comment)
     {
         try {
             Gate::authorize('update', $comment);
@@ -84,7 +86,7 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Comment $comment)
+    public function destroy(TicketSolution $ticketSolution, Comment $comment)
     {
         try {
             Gate::authorize('delete', $comment);
