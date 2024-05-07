@@ -3,6 +3,7 @@
 namespace App\Repositories\Comment;
 
 use App\Models\Comment;
+use DB;
 
 class CommentRepository implements ICommentRepository
 {

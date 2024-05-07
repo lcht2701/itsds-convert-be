@@ -8,8 +8,13 @@ use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
+use App\Models\TicketSolution;
 use App\Repositories\Comment\ICommentRepository;
+use Exception;
 use Gate;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CommentController extends Controller
 {
@@ -22,12 +27,10 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index($solutionId)
+    public function index(TicketSolution $ticketSolution)
     {
-        $query = Comment::query();
-        $comments = $query->where('ticket_solution_id', $solutionId)->orderBy('created_at', 'desc')->paginate(10);
-        // $comments = $this->commentRepository->allbySolution($solutionId);
-        return $this->sendResponse("Get Comment List", 200, new GenericCollection($comments, CommentResource::class));
+        $comments = $this->commentRepository->allbySolution($ticketSolution->id);
+        return $this->sendResponse("Get Comment List", 200, CommentResource::collection($comments));
     }
 
     /**
@@ -35,7 +38,13 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request)
     {
-        //
+        try {
+            $data = $request->validated();
+            $result = $this->commentRepository->create($data);
+            return $this->sendResponse("Comment Created", 200, new CommentResource($result));
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
+        }
     }
 
     /**
@@ -43,7 +52,14 @@ class CommentController extends Controller
      */
     public function show(Comment $comment)
     {
-        //
+        try {
+            $result = $this->commentRepository->find($comment->id);
+            return $this->sendResponse("Get Comment Detail", 200, new CommentResource($result));
+        } catch (ModelNotFoundException $ex) {
+            return $this->sendNotFound("Comment is not exist or already deleted");
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
+        }
     }
 
     /**
@@ -51,7 +67,18 @@ class CommentController extends Controller
      */
     public function update(UpdateCommentRequest $request, Comment $comment)
     {
-        Gate::authorize('update', $comment);
+        try {
+            Gate::authorize('update', $comment);
+            $data = $request->validated();
+            $result = $this->commentRepository->update($comment->id, $data);
+            return $this->sendResponse("Comment Updated", 200, new CommentResource($result));
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
+            return $this->sendNotFound("Comment is not exist or already deleted");
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
+        }
     }
 
     /**
@@ -59,6 +86,16 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
+        try {
+            Gate::authorize('delete', $comment);
+            $this->commentRepository->delete($comment->id);
+            return $this->sendResponse("Comment Deleted", 200);
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
+        } catch (ModelNotFoundException $ex) {
+            return $this->sendNotFound("Comment is not exist or already deleted");
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
+        }
     }
 }

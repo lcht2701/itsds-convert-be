@@ -11,7 +11,6 @@ Route::middleware('auth:sanctum')->group(function () {
     //Specific Route
     Route::get('/user/profile', [UserController::class, 'showProfile']);
     Route::match (['put', 'patch'], '/user/profile/{user}', [UserController::class, 'updateProfile']);
-    Route::match (['put', 'patch'], '/user/profile/{user}', [UserController::class, 'updateProfile']);
     Route::match (['put', 'patch'], '/ticket-solution/{ticketSolution}/approve', [TicketSolutionController::class, 'approve']);
     Route::match (['put', 'patch'], '/ticket-solution/{ticketSolution}/reject', [TicketSolutionController::class, 'reject']);
 
@@ -19,8 +18,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('category', CategoryController::class);
     Route::apiResource('user', UserController::class);
     Route::apiResource('service', ServiceController::class);
+    Route::apiResource('ticket-solution/{ticketSolution}/comment', CommentController::class);
     Route::apiResource('ticket-solution', TicketSolutionController::class);
-    Route::apiResource('ticket-solution/{solutionId}/comment', CommentController::class);
 
 });
 
