@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\ReactionController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TicketSolutionController;
 use App\Http\Controllers\Api\UserController;
@@ -13,7 +14,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::match (['put', 'patch'], '/user/profile/{user}', [UserController::class, 'updateProfile']);
     Route::match (['put', 'patch'], '/ticket-solution/{ticketSolution}/approve', [TicketSolutionController::class, 'approve']);
     Route::match (['put', 'patch'], '/ticket-solution/{ticketSolution}/reject', [TicketSolutionController::class, 'reject']);
-
+    Route::get('/ticket-solution/{ticketSolution}/react', [ReactionController::class, 'get']);
+    Route::post('/ticket-solution/{ticketSolution}/react/like', [ReactionController::class, 'like']);
+    Route::post('/ticket-solution/{ticketSolution}/react/dislike', [ReactionController::class, 'dislike']);
     //General Route
     Route::apiResource('category', CategoryController::class);
     Route::apiResource('user', UserController::class);

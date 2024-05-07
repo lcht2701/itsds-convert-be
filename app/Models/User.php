@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -48,6 +49,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserRole::class,
         ];
     }
 
@@ -58,7 +60,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isCustomer(): bool
     {
-        return $this->role === 0;
+        return $this->role === UserRole::Customer;
     }
 
     /**
@@ -68,7 +70,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isCompanyAdmin(): bool
     {
-        return $this->role === 1;
+        return $this->role === UserRole::CompanyAdmin;
     }
 
     /**
@@ -78,7 +80,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isTechnician(): bool
     {
-        return $this->role === 2;
+        return $this->role === UserRole::Technician;
     }
 
     /**
@@ -88,7 +90,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isManager(): bool
     {
-        return $this->role === 3;
+        return $this->role === UserRole::Manager;
     }
 
     /**
@@ -98,6 +100,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function isAdmin(): bool
     {
-        return $this->role === 4;
+        return $this->role === UserRole::Admin;
     }
 }
