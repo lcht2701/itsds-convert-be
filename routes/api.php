@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TicketSolutionController;
 use App\Http\Controllers\Api\UserController;
@@ -19,6 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('user', UserController::class);
     Route::apiResource('service', ServiceController::class);
     Route::apiResource('ticket-solution', TicketSolutionController::class);
+    Route::apiResource('ticket-solution/{solutionId}/comment', CommentController::class);
 
 });
 

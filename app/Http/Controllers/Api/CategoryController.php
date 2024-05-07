@@ -8,23 +8,27 @@ use App\Http\Resources\Collections\GenericCollection;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Repositories\Category\ICategoryRepository;
 use Exception;
 use Gate;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CategoryController extends Controller
 {
+    protected $categoryRepository;
+
+    public function __construct(ICategoryRepository $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $query = Category::query();
-        $categories = $query
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $categories = $this->categoryRepository->paginate();
         return $this->sendResponse("Get Category List", 200, new GenericCollection($categories, CategoryResource::class));
     }
 
@@ -36,7 +40,7 @@ class CategoryController extends Controller
         try {
             Gate::authorize('create', Category::class);
             $data = $request->validated();
-            $result = Category::create($data);
+            $result = $this->categoryRepository->create($data);
             return $this->sendResponse("Category Created", 200, new CategoryResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
@@ -51,7 +55,8 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         try {
-            return $this->sendResponse("Get Category Detail", 200, new CategoryResource($category));
+            $result = $this->categoryRepository->find($category->id);
+            return $this->sendResponse("Get Category Detail", 200, new CategoryResource($result));
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Category is not exist or already deleted");
         } catch (Exception $ex) {
@@ -67,8 +72,8 @@ class CategoryController extends Controller
         try {
             Gate::authorize('update', $category);
             $data = $request->validated();
-            $category->update($data);
-            return $this->sendResponse("Category Updated", 200, new CategoryResource($category));
+            $result = $this->categoryRepository->update($category->id, $data);
+            return $this->sendResponse("Category Updated", 200, new CategoryResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (ModelNotFoundException $ex) {
@@ -85,7 +90,7 @@ class CategoryController extends Controller
     {
         try {
             Gate::authorize('delete', $category);
-            $category->delete();
+            $this->categoryRepository->delete($category->id);
             return $this->sendResponse("Category Deleted", 200);
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");

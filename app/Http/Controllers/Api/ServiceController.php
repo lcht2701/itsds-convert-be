@@ -8,24 +8,27 @@ use App\Http\Resources\ServiceResource;
 use App\Models\Service;
 use App\Http\Requests\StoreServiceRequest;
 use App\Http\Requests\UpdateServiceRequest;
+use App\Repositories\Service\IServiceRepository;
 use Exception;
 use Gate;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ServiceController extends Controller
 {
+    protected $serviceRepository;
+
+    public function __construct(IServiceRepository $serviceRepository)
+    {
+        $this->serviceRepository = $serviceRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $query = Service::query();
-
-        $services = $query
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $services = $this->serviceRepository->paginate();
         return $this->sendResponse("Get Service List", 200, new GenericCollection($services, ServiceResource::class));
     }
 
@@ -37,7 +40,7 @@ class ServiceController extends Controller
         try {
             Gate::authorize('create', Service::class);
             $data = $request->validated();
-            $result = Service::create($data);
+            $result = $this->serviceRepository->create($data);
             return $this->sendResponse("Service Created", 200, new ServiceResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
@@ -54,7 +57,8 @@ class ServiceController extends Controller
     public function show(Service $service)
     {
         try {
-            return $this->sendResponse("Get Service Detail", 200, new ServiceResource($service));
+            $result = $this->serviceRepository->find($service->id);
+            return $this->sendResponse("Get Service Detail", 200, new ServiceResource($result));
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("service is not exist or already deleted");
         } catch (Exception $ex) {
@@ -70,8 +74,8 @@ class ServiceController extends Controller
         try {
             Gate::authorize('update', $service);
             $data = $request->validated();
-            $service->update($data);
-            return $this->sendResponse("Service Updated", 200, new ServiceResource($service));
+            $result = $this->serviceRepository->update($service->id, $data);
+            return $this->sendResponse("Service Updated", 200, new ServiceResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (ModelNotFoundException $ex) {
@@ -88,7 +92,7 @@ class ServiceController extends Controller
     {
         try {
             Gate::authorize('update', $service);
-            $service->delete();
+            $this->serviceRepository->delete($service->id);
             return $this->sendResponse("Service Deleted", 200);
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
