@@ -24,6 +24,8 @@ use App\Repositories\Company\CompanyRepository;
 use App\Repositories\Company\ICompanyRepository;
 use App\Repositories\CompanyAddress\CompanyAddressRepository;
 use App\Repositories\CompanyAddress\ICompanyAddressRepository;
+use App\Repositories\CompanyMember\CompanyMemberRepository;
+use App\Repositories\CompanyMember\ICompanyMemberRepository;
 use App\Repositories\File\FileRepository;
 use App\Repositories\File\IFileRepository;
 use App\Repositories\Reaction\IReactionRepository;
@@ -46,6 +48,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //Register Repositories
+        $this->app->bind(IFileRepository::class, FileRepository::class);
         $this->app->bind(ICompanyAddressRepository::class, CompanyAddressRepository::class);
         $this->app->bind(ICategoryRepository::class, CategoryRepository::class);
         $this->app->bind(IServiceRepository::class, ServiceRepository::class);
@@ -54,7 +57,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(IUserRepository::class, UserRepository::class);
         $this->app->bind(ITicketSolutionRepository::class, TicketSolutionRepository::class);
         $this->app->bind(ICompanyRepository::class, CompanyRepository::class);
-        $this->app->bind(IFileRepository::class, FileRepository::class);
+        $this->app->bind(ICompanyMemberRepository::class, CompanyMemberRepository::class);
     }
 
     /**

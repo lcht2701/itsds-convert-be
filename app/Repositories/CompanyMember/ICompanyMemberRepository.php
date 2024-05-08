@@ -1,10 +1,14 @@
 <?php
 
-namespace App\Repositories\CompanyAddress;
+namespace App\Repositories\CompanyMember;
 
-interface ICompanyAddressRepository
+interface ICompanyMemberRepository
 {
     public function allByCompany($companyId, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
+
+    public function paginateByCompany($companyId, $perPage = 15, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
+
+    public function getCompanyAdmins($companyId);
 
     public function create(array $data);
 

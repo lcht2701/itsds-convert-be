@@ -14,4 +14,9 @@ class CompanyAddress extends Model
         'company_id',
         'address'
     ];
+
+    public function companyMembers()
+    {
+        return $this->hasMany(CompanyMember::class);
+    }
 }

@@ -112,7 +112,8 @@ class UserController extends Controller
     {
         try {
             Gate::authorize('delete', $user);
-            $this->userRepository->delete($user->id);
+            $this->userRepository->delete
+            ($user->id);
             return $this->sendResponse("User Deleted", 200);
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
