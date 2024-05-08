@@ -58,7 +58,7 @@ class ReactionRepository implements IReactionRepository
                 'reaction_type' => $reactionType
             ]);
         } else if ($my_reaction->reaction_type === $reactionType) {
-            $my_reaction->delete();
+            $my_reaction->forceDelete();
         } else {
             $my_reaction->reaction_type = $reactionType;
             $my_reaction->save();

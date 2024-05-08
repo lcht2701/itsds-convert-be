@@ -4,12 +4,14 @@ namespace App\Providers;
 
 use App\Models\Category;
 use App\Models\Comment;
+use App\Models\Company;
 use App\Models\Reaction;
 use App\Models\Service;
 use App\Models\TicketSolution;
 use App\Models\User;
 use App\Policies\CategoryPolicy;
 use App\Policies\CommentPolicy;
+use App\Policies\CompanyPolicy;
 use App\Policies\ReactionPolicy;
 use App\Policies\ServicePolicy;
 use App\Policies\TicketSolutionPolicy;
@@ -18,6 +20,10 @@ use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Category\ICategoryRepository;
 use App\Repositories\Comment\CommentRepository;
 use App\Repositories\Comment\ICommentRepository;
+use App\Repositories\Company\CompanyRepository;
+use App\Repositories\Company\ICompanyRepository;
+use App\Repositories\File\FileRepository;
+use App\Repositories\File\IFileRepository;
 use App\Repositories\Reaction\IReactionRepository;
 use App\Repositories\Reaction\ReactionRepository;
 use App\Repositories\Service\IServiceRepository;
@@ -44,6 +50,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(IReactionRepository::class, ReactionRepository::class);
         $this->app->bind(IUserRepository::class, UserRepository::class);
         $this->app->bind(ITicketSolutionRepository::class, TicketSolutionRepository::class);
+        $this->app->bind(ICompanyRepository::class, CompanyRepository::class);
+        $this->app->bind(IFileRepository::class, FileRepository::class);
     }
 
     /**
@@ -85,5 +93,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(TicketSolution::class, TicketSolutionPolicy::class);
         Gate::policy(Service::class, ServicePolicy::class);
         Gate::policy(Reaction::class, ReactionPolicy::class);
+        Gate::policy(Company::class, CompanyPolicy::class);
     }
 }
