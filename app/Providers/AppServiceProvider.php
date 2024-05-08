@@ -22,6 +22,10 @@ use App\Repositories\Reaction\IReactionRepository;
 use App\Repositories\Reaction\ReactionRepository;
 use App\Repositories\Service\IServiceRepository;
 use App\Repositories\Service\ServiceRepository;
+use App\Repositories\TicketSolution\ITicketSolutionRepository;
+use App\Repositories\TicketSolution\TicketSolutionRepository;
+use App\Repositories\User\IUserRepository;
+use App\Repositories\User\UserRepository;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -38,6 +42,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(IServiceRepository::class, ServiceRepository::class);
         $this->app->bind(ICommentRepository::class, CommentRepository::class);
         $this->app->bind(IReactionRepository::class, ReactionRepository::class);
+        $this->app->bind(IUserRepository::class, UserRepository::class);
+        $this->app->bind(ITicketSolutionRepository::class, TicketSolutionRepository::class);
     }
 
     /**

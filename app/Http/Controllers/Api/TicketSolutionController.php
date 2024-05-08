@@ -9,6 +9,7 @@ use App\Http\Resources\TicketSolutionResource;
 use App\Models\TicketSolution;
 use App\Http\Requests\StoreTicketSolutionRequest;
 use App\Http\Requests\UpdateTicketSolutionRequest;
+use App\Repositories\TicketSolution\TicketSolutionRepository;
 use Auth;
 use Exception;
 use Gate;
@@ -18,16 +19,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TicketSolutionController extends Controller
 {
+    protected $ticketSolutionRepository;
+
+    public function __construct(TicketSolutionRepository $ticketSolutionRepository)
+    {
+        $this->ticketSolutionRepository = $ticketSolutionRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $query = TicketSolution::query();
-        $ticketSolutions = $query
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
+        $ticketSolutions = $this->ticketSolutionRepository->paginate();
         return $this->sendResponse('Get Ticket Solution List', 200, new GenericCollection($ticketSolutions, TicketSolutionResource::class));
     }
 
@@ -39,9 +43,9 @@ class TicketSolutionController extends Controller
         try {
             Gate::authorize('create', TicketSolution::class);
             $data = $request->validated();
-            $data['created_by_id'] = Auth::user()->id;
-            $data['review_date'] = null;
-            $result = TicketSolution::create($data);
+            $data['created_by_id'] = Auth::user()->id; // default userId who create ticket solution
+            $data['review_date'] = null; // default date for review_date
+            $result = $this->ticketSolutionRepository->create($data);
             return $this->sendResponse("Ticket Solution Created", 200, new TicketSolutionResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
@@ -56,7 +60,8 @@ class TicketSolutionController extends Controller
     public function show(TicketSolution $ticketSolution)
     {
         try {
-            return $this->sendResponse("Get Ticket Solution Detail", 200, new TicketSolutionResource($ticketSolution));
+            $result = $this->ticketSolutionRepository->find($ticketSolution->id);
+            return $this->sendResponse("Get Ticket Solution Detail", 200, new TicketSolutionResource($result));
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Ticket Solution is not exist or already deleted");
         } catch (Exception $ex) {
@@ -72,8 +77,8 @@ class TicketSolutionController extends Controller
         try {
             Gate::authorize('update', $ticketSolution);
             $data = $request->validated();
-            $ticketSolution->update($data);
-            return $this->sendResponse("Ticket Solution Updated", 200, new TicketSolutionResource($ticketSolution));
+            $result = $this->ticketSolutionRepository->update($ticketSolution->id, $data);
+            return $this->sendResponse("Ticket Solution Updated", 200, new TicketSolutionResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (ModelNotFoundException $ex) {
@@ -90,7 +95,7 @@ class TicketSolutionController extends Controller
     {
         try {
             Gate::authorize('delete', $ticketSolution);
-            $ticketSolution->delete();
+            $this->ticketSolutionRepository->delete($ticketSolution->id);
             return $this->sendResponse("Ticket Solution Deleted", 200);
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
@@ -105,9 +110,8 @@ class TicketSolutionController extends Controller
     {
         try {
             Gate::authorize('approve', $ticketSolution);
-            $ticketSolution['review_date'] = now();
-            $ticketSolution->update();
-            return $this->sendResponse("Ticket Solution Approved", 200, new TicketSolutionResource($ticketSolution));
+            $result = $this->ticketSolutionRepository->approve($ticketSolution->id);
+            return $this->sendResponse("Ticket Solution Approved", 200, new TicketSolutionResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (ModelNotFoundException $ex) {
@@ -120,9 +124,8 @@ class TicketSolutionController extends Controller
     {
         try {
             Gate::authorize('reject', $ticketSolution);
-            $ticketSolution['review_date'] = null;
-            $ticketSolution->update();
-            return $this->sendResponse("Ticket Solution Rejected", 200, new TicketSolutionResource($ticketSolution));
+            $result = $this->ticketSolutionRepository->reject($ticketSolution->id);
+            return $this->sendResponse("Ticket Solution Rejected", 200, new TicketSolutionResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (ModelNotFoundException $ex) {

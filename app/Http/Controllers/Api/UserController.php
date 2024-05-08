@@ -10,25 +10,35 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Repositories\User\IUserRepository;
 use Auth;
 use Exception;
 use Gate;
 use Hash;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class UserController extends Controller
 {
+    protected $userRepository;
+
+    public function __construct(IUserRepository $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $query = User::query();
-        $users = $query
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-        return $this->sendResponse('Get User List', 200, new GenericCollection($users, UserResource::class));
+        try {
+            $users = $this->userRepository->paginate();
+            return $this->sendResponse('Get User List', 200, new GenericCollection($users, UserResource::class));
+        } catch (Exception $e) {
+            return $this->sendInternalError("Error", $e);
+        }
     }
 
     /**
@@ -39,12 +49,14 @@ class UserController extends Controller
         try {
             Gate::authorize('create', User::class);
             $data = $request->validated();
-            $data['password'] = Hash::make($data['password']);
+            $data['password'] = Hash::make($data['password']); //Hash password before submit to database
             $data['is_active'] = true; // default active status when new account is created
-            $result = User::create($data);
+            $result = $this->userRepository->create($data);
             return $this->sendResponse("User Created", 200, new UserResource($result));
         } catch (AuthorizationException $ex) {
             return $this->sendUnauthorized('You do not have permission to do this action');
+        } catch (BadRequestException $e) {
+            return $this->sendBadRequest("Bad Request", $e);
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
         }
@@ -56,7 +68,16 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return $this->sendResponse("Get User Detail", 200, new UserResource($user));
+        try {
+            $result = $this->userRepository->find($user->id);
+            return $this->sendResponse("Get User Detail", 200, new UserResource($result));
+        } catch (ModelNotFoundException) {
+            return $this->sendNotFound("User is not exist");
+        } catch (BadRequestException $e) {
+            return $this->sendBadRequest("Bad Request", $e);
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
+        }
     }
 
     /**
@@ -73,12 +94,12 @@ class UserController extends Controller
             } else {
                 unset($data['password']); // Remove password from array if not set
             }
-            $user->update($data);
-            return $this->sendResponse("User Updated", 200, new UserResource($user));
+            $result = $this->userRepository->update($user->id, $data);
+            return $this->sendResponse("User Updated", 200, new UserResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (ModelNotFoundException $ex) {
-            return $this->sendNotFound("Category is not exist or already deleted");
+            return $this->sendNotFound("User is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
         }
@@ -91,12 +112,12 @@ class UserController extends Controller
     {
         try {
             Gate::authorize('delete', $user);
-            $user->delete();
+            $this->userRepository->delete($user->id);
             return $this->sendResponse("User Deleted", 200);
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (ModelNotFoundException $ex) {
-            return $this->sendNotFound("Category is not exist or already deleted");
+            return $this->sendNotFound("User is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
         }
@@ -104,11 +125,14 @@ class UserController extends Controller
 
     public function showProfile()
     {
-        $user = Auth::user();
-        if (!$user) {
-            return $this->sendUnauthorized('You do not have permission to do this action');
+        try {
+            $user = $this->userRepository->find(Auth::user()->id);
+            return $this->sendResponse("Get User Profile", 200, new UserProfileResource($user));
+        } catch (ModelNotFoundException $ex) {
+            return $this->sendNotFound("User is not exist or already deleted");
+        } catch (Exception $ex) {
+            return $this->sendInternalError("Error", $ex);
         }
-        return $this->sendResponse("Get User Profile", 200, new UserProfileResource($user));
     }
 
     public function updateProfile(UpdateUserProfileRequest $request, User $user)
@@ -122,12 +146,12 @@ class UserController extends Controller
             } else {
                 unset($data['password']); // Remove password from array if not set
             }
-            $user->update($data);
-            return $this->sendResponse("User Updated", 200, new UserResource($user));
+            $result = $this->userRepository->update($user->id, $data);
+            return $this->sendResponse("User Updated", 200, new UserResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (ModelNotFoundException $ex) {
-            return $this->sendNotFound("Category is not exist or already deleted");
+            return $this->sendNotFound("User is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
         }

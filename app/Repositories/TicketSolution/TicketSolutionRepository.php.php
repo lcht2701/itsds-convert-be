@@ -23,19 +23,35 @@ class TicketSolutionRepository implements ITicketSolutionRepository
 
     public function update($id, array $data)
     {
-        $user = TicketSolution::findOrFail($id);
-        $user->update($data);
-        return $user;
+        $entity = TicketSolution::findOrFail($id);
+        $entity->update($data);
+        return $entity;
     }
 
     public function delete($id)
     {
-        $user = TicketSolution::findOrFail($id);
-        $user->delete();
+        $entity = TicketSolution::findOrFail($id);
+        $entity->delete();
     }
 
     public function find($id)
     {
         return TicketSolution::findOrFail($id);
+    }
+
+    public function approve($id)
+    {
+        $entity = TicketSolution::findOrFail($id);
+        $entity->created_by_id = now();
+        $entity->update();
+        return $entity;
+    }
+
+    public function reject($id)
+    {
+        $entity = TicketSolution::findOrFail($id);
+        $entity->created_by_id = null;
+        $entity->update();
+        return $entity;
     }
 }

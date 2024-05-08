@@ -15,4 +15,8 @@ interface ITicketSolutionRepository
     public function delete($id);
 
     public function find($id);
+
+    public function approve($id);
+
+    public function reject($id);
 }
