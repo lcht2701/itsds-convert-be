@@ -22,6 +22,8 @@ use App\Repositories\Comment\CommentRepository;
 use App\Repositories\Comment\ICommentRepository;
 use App\Repositories\Company\CompanyRepository;
 use App\Repositories\Company\ICompanyRepository;
+use App\Repositories\CompanyAddress\CompanyAddressRepository;
+use App\Repositories\CompanyAddress\ICompanyAddressRepository;
 use App\Repositories\File\FileRepository;
 use App\Repositories\File\IFileRepository;
 use App\Repositories\Reaction\IReactionRepository;
@@ -44,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //Register Repositories
+        $this->app->bind(ICompanyAddressRepository::class, CompanyAddressRepository::class);
         $this->app->bind(ICategoryRepository::class, CategoryRepository::class);
         $this->app->bind(IServiceRepository::class, ServiceRepository::class);
         $this->app->bind(ICommentRepository::class, CommentRepository::class);

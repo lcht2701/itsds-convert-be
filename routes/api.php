@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\CompanyAddressController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\ReactionController;
 use App\Http\Controllers\Api\ServiceController;
@@ -28,8 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('category', CategoryController::class);
     Route::apiResource('user', UserController::class);
     Route::apiResource('service', ServiceController::class);
-    Route::apiResource('ticket-solution', TicketSolutionController::class);
     Route::apiResource('ticket-solution/{ticketSolution}/comment', CommentController::class);
+    Route::apiResource('company/{company}/companyAddress', CompanyAddressController::class);
+    Route::apiResource('ticket-solution', TicketSolutionController::class);
     Route::apiResource('company', CompanyController::class);
 
 });

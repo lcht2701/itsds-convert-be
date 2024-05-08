@@ -9,19 +9,18 @@ use App\Http\Resources\TicketSolutionResource;
 use App\Models\TicketSolution;
 use App\Http\Requests\StoreTicketSolutionRequest;
 use App\Http\Requests\UpdateTicketSolutionRequest;
-use App\Repositories\TicketSolution\TicketSolutionRepository;
+use App\Repositories\TicketSolution\ITicketSolutionRepository;
 use Auth;
 use Exception;
 use Gate;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TicketSolutionController extends Controller
 {
     protected $ticketSolutionRepository;
 
-    public function __construct(TicketSolutionRepository $ticketSolutionRepository)
+    public function __construct(ITicketSolutionRepository $ticketSolutionRepository)
     {
         $this->ticketSolutionRepository = $ticketSolutionRepository;
     }
