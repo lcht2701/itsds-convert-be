@@ -10,11 +10,10 @@ use App\Models\CompanyMember;
 use App\Http\Requests\StoreCompanyMemberRequest;
 use App\Http\Requests\UpdateCompanyMemberRequest;
 use App\Repositories\CompanyMember\ICompanyMemberRepository;
-use App\Repositories\User\IUserRepository;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
-use Gate;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Gate;
 
 class CompanyMemberController extends Controller
 {

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\CompanyAddressController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\CompanyMemberController;
+use App\Http\Controllers\Api\ContractController;
 use App\Http\Controllers\Api\ReactionController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TicketSolutionController;
@@ -37,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('company', CompanyController::class);
     Route::apiResource('company/{company}/address', CompanyAddressController::class);
     Route::apiResource('company/{company}/member', CompanyMemberController::class);
+    Route::apiResource('contract', ContractController::class);
 
 });
 
