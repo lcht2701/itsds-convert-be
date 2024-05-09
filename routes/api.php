@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\CompanyAddressController;
 use App\Http\Controllers\Api\CompanyController;
+use App\Http\Controllers\Api\CompanyMemberController;
 use App\Http\Controllers\Api\ReactionController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\TicketSolutionController;
@@ -25,6 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/company/all', [CompanyController::class, 'all']);
 
+    Route::get('/company/{company}/member/select', [CompanyMemberController::class, 'getSelectList']);
+
     //General Route
     Route::apiResource('category', CategoryController::class);
     Route::apiResource('user', UserController::class);
@@ -33,7 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('ticket-solution/{ticketSolution}/comment', CommentController::class);
     Route::apiResource('company', CompanyController::class);
     Route::apiResource('company/{company}/address', CompanyAddressController::class);
-    Route::apiResource('company/{company}/companyAddress', CompanyAddressController::class);
+    Route::apiResource('company/{company}/member', CompanyMemberController::class);
 
 });
 

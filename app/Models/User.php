@@ -53,6 +53,11 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    public function companyMembers()
+    {
+        return $this->hasMany(CompanyMember::class);
+    }
+
     /**
      * Check if the user is a customer.
      *

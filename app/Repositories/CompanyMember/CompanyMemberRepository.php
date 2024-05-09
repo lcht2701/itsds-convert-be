@@ -4,6 +4,7 @@ namespace App\Repositories\CompanyMember;
 
 use App\Enums\UserRole;
 use App\Models\CompanyMember;
+use App\Models\User;
 
 class CompanyMemberRepository implements ICompanyMemberRepository
 {
@@ -27,6 +28,13 @@ class CompanyMemberRepository implements ICompanyMemberRepository
             ->whereHas('member', function ($query) {
                 $query->where('role', UserRole::CompanyAdmin);
             })->get();
+    }
+
+    public function getMembersNotInCompany()
+    {
+        return User::where('role', UserRole::Customer)
+            ->whereDoesntHave('companyMembers')
+            ->get();
     }
 
     public function create(array $data)

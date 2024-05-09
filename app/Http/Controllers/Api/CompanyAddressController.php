@@ -67,7 +67,7 @@ class CompanyAddressController extends Controller
     public function update(Company $company, UpdateCompanyAddressRequest $request, CompanyAddress $companyAddress)
     {
         try {
-            Gate::authorize('update', $company);
+            Gate::authorize('update', $request);
             $data = $request->validated();
             $result = $this->companyAddressRepository->update($companyAddress->id, $data);
             return $this->sendResponse("Company Address Updated", 200, new CompanyAddressResource($result));

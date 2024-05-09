@@ -10,6 +10,8 @@ interface ICompanyMemberRepository
 
     public function getCompanyAdmins($companyId);
 
+    public function getMembersNotInCompany();
+
     public function create(array $data);
 
     public function update($id, array $data);
