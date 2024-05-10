@@ -10,7 +10,7 @@ use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
 use App\Repositories\Company\ICompanyRepository;
 use App\Repositories\File\IFileRepository;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
@@ -108,8 +108,6 @@ class CompanyController extends Controller
                 }
             }
             unset($data['logo']);
-
-            \Log::info('Updating company', ['id' => $company->id, 'data' => $data]);
             $result = $this->companyRepository->update($company->id, $data);
             return $this->sendResponse("Company Updated", 200, new CompanyResource($result));
         } catch (AuthorizationException $e) {

@@ -10,7 +10,7 @@ use App\Http\Requests\StoreCompanyAddressRequest;
 use App\Http\Requests\UpdateCompanyAddressRequest;
 use App\Repositories\CompanyAddress\ICompanyAddressRepository;
 use Exception;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 

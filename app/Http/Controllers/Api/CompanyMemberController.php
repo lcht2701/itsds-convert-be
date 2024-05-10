@@ -13,8 +13,7 @@ use App\Repositories\CompanyMember\ICompanyMemberRepository;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Gate;
-
+use Illuminate\Support\Facades\Gate;
 class CompanyMemberController extends Controller
 {
     protected $companyMemberRepository;

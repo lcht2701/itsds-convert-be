@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Collections\GenericCollection;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Http\Requests\StoreCommentRequest;
@@ -11,9 +10,10 @@ use App\Http\Requests\UpdateCommentRequest;
 use App\Models\TicketSolution;
 use App\Repositories\Comment\ICommentRepository;
 use Exception;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -39,7 +39,7 @@ class CommentController extends Controller
     {
         try {
             $data = $request->validated();
-            $data['user_id'] = \Auth::user()->id;
+            $data['user_id'] = Auth::user()->id;
             $data['ticket_solution_id'] = $ticketSolution->id;
             $result = $this->commentRepository->create($data);
             return $this->sendResponse("Comment Created", 200, new CommentResource($result));

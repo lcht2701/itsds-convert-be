@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CompanyMemberController;
 use App\Http\Controllers\Api\ContractController;
 use App\Http\Controllers\Api\ReactionController;
 use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\ServicesContractController;
 use App\Http\Controllers\Api\TicketSolutionController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('company/{company}/address', CompanyAddressController::class);
     Route::apiResource('company/{company}/member', CompanyMemberController::class);
     Route::apiResource('contract', ContractController::class);
+    Route::apiResource('contract/{contract}/service', ServicesContractController::class);
 
 });
 
