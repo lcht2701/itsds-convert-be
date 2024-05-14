@@ -6,12 +6,12 @@ use App\Models\Category;
 
 class CategoryRepository implements ICategoryRepository
 {
-    public function all($columns = ['*'], $orderBy = 'id', $sortBy = 'asc')
+    public function all($columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return Category::orderBy($orderBy, $sortBy)->get($columns);
     }
 
-    public function paginate($perPage = 15, $columns = ['*'], $orderBy = 'id', $sortBy = 'asc')
+    public function paginate($perPage = 15, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return Category::orderBy($orderBy, $sortBy)->paginate($perPage, $columns);
     }

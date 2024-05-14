@@ -20,13 +20,13 @@ class ContractResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'company' => $this->company,
-            'start_date' => Carbon::parse($this->start_date)->format('Y-m-d H:m:s'),
+            'start_date' => Carbon::parse($this->start_date)->format('Y-m-d H:i:s'),
             'duration' => $this->duration,
-            'end_date' => Carbon::parse($this->start_date->addMonth($this->duration))->format('Y-m-d H:m:s'),
+            'end_date' => Carbon::parse($this->start_date->addMonth($this->duration))->format('Y-m-d H:i:s'),
             'value' => $this->value,
             'status' => $this->status,
-            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:m:s'),
-            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:m:s'),
+            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s'),
         ];
     }
 }

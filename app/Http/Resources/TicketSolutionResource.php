@@ -21,11 +21,11 @@ class TicketSolutionResource extends JsonResource
             'content' => $this->content,
             'service' => $this->service,
             'owner' => $this->owner,
-            'review_date' => Carbon::parse($this->review_date)->format('Y-m-d H:m:s'),
+            'review_date' => Carbon::parse($this->review_date)->format('Y-m-d H:i:s'),
             'keyword' => $this->keyword,
             'createdBy' => $this->createdBy,
-            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:m:s'),
-            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:m:s'),
+            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s'),
         ];
     }
 }

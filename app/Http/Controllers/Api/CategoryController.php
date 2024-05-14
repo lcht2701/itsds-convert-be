@@ -30,6 +30,7 @@ class CategoryController extends Controller
     {
         $categories = $this->categoryRepository->paginate();
         return $this->sendResponse("Get Category List", 200, new GenericCollection($categories, CategoryResource::class));
+        // return $this->sendResponse("Get Category List", 200, $categories);
     }
 
     /**

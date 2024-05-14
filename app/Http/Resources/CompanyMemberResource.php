@@ -20,8 +20,8 @@ class CompanyMemberResource extends JsonResource
             'member' => $this->member,
             'company' => $this->company,
             'companyAddress' => $this->companyAddress,
-            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:m:s'),
-            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:m:s'),
+            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s'),
         ];
     }
 }

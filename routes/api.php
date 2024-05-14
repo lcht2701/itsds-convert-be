@@ -30,6 +30,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/company/{company}/member/select', [CompanyMemberController::class, 'getSelectList']);
 
+    Route::get('contract/{contract}/service/available', [ServicesContractController::class, 'getAvailableServices']);
+
     //General Route
     Route::apiResource('category', CategoryController::class);
     Route::apiResource('user', UserController::class);
@@ -41,7 +43,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('company/{company}/member', CompanyMemberController::class);
     Route::apiResource('contract', ContractController::class);
     Route::apiResource('contract/{contract}/service', ServicesContractController::class);
-
 });
 
 

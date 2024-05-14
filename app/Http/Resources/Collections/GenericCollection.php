@@ -28,21 +28,30 @@ class GenericCollection extends ResourceCollection
     {
         return [
             'data' => $this->collection,
-            'links' => [
-                'first' => $this->url(1),
-                'last' => $this->url($this->lastPage()),
-                'prev' => $this->previousPageUrl(),
-                'next' => $this->nextPageUrl(),
-            ],
-            'meta' => [
-                'current_page' => $this->currentPage(),
-                'from' => $this->firstItem(),
+            'pagination' => [
+                'has_pages' => $this->hasPages(),
+                'first_page' => 1,
                 'last_page' => $this->lastPage(),
-                'path' => $this->path(),
-                'per_page' => $this->perPage(),
+                'prev' => $this->previousPageNumber(),
+                'current_page' => $this->currentPage(),
+                'next' => $this->nextPageNumber(),
+                'from' => $this->firstItem(),
                 'to' => $this->lastItem(),
+                'per_page' => $this->perPage(),
                 'total' => $this->total(),
-            ]
+            ],
         ];
+    }
+
+
+
+    protected function nextPageNumber()
+    {
+        return $this->resource->currentPage() < $this->resource->lastPage() ? $this->resource->currentPage() + 1 : null;
+    }
+
+    protected function previousPageNumber()
+    {
+        return $this->resource->currentPage() > 1 ? $this->resource->currentPage() - 1 : null;
     }
 }

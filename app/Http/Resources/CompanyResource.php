@@ -25,8 +25,8 @@ class CompanyResource extends JsonResource
             'logo_url' => $this->logo_url,
             'field_of_business' => $this->field_of_business,
             'is_active' => $this->is_active,
-            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:m:s'),
-            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:m:s'),
+            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s'),
         ];
     }
 }
