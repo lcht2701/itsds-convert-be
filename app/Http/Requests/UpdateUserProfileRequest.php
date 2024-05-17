@@ -26,14 +26,7 @@ class UpdateUserProfileRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'password' => [
-                'nullable',
-                'string',
-                'min:8',
-                'regex:/[0-9]/',
-                'regex:/[a-zA-Z]/',
-            ],
-            'phone' => ['required', 'string', 'min:10', 'max:15'],
+            'phone' => ['nullable', 'string', 'min:10', 'max:15'],
         ];
     }
 }

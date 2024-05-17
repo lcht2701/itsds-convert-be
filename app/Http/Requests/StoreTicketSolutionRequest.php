@@ -23,7 +23,7 @@ class StoreTicketSolutionRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'content' => ['nullable', 'string', 'max:1024'],
+            'content' => ['nullable', 'string'],
             'service_id' => ['required', 'exists:services,id'],
             'owner_id' => ['required', 'exists:users,id'],
             'keyword' => ['nullable'],

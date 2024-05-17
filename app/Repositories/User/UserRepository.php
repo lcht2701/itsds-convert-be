@@ -2,10 +2,18 @@
 
 namespace App\Repositories\User;
 
+use App\Enums\UserRole;
 use App\Models\User;
 
 class UserRepository implements IUserRepository
 {
+    public function getOwnerList($columns = ['*'], $orderBy = 'name', $sortBy = 'asc')
+    {
+        return User::where("role", UserRole::Manager)
+            ->orWhere("role", UserRole::Technician)
+            ->get($columns);
+    }
+
     public function all($columns = ['*'], $orderBy = 'id', $sortBy = 'asc')
     {
         return User::orderBy($orderBy, $sortBy)->get($columns);

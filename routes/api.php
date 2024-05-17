@@ -16,19 +16,22 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function () {
 
     //Specific Route
-    Route::get('/user/profile', [UserController::class, 'showProfile']);
-    Route::match (['put', 'patch'], '/user/profile/{user}', [UserController::class, 'updateProfile']);
+    Route::get('/category/select', [CategoryController::class, 'getSelectList']);
+    Route::get('/service/select', [ServiceController::class, 'getSelectList']);
+    Route::get('/user/owner/select', [UserController::class, 'getOwnerList']);
+    Route::get('/company/{company}/member/select', [CompanyMemberController::class, 'getSelectList']);
 
-    Route::match (['put', 'patch'], '/ticket-solution/{ticketSolution}/approve', [TicketSolutionController::class, 'approve']);
-    Route::match (['put', 'patch'], '/ticket-solution/{ticketSolution}/reject', [TicketSolutionController::class, 'reject']);
+    Route::get('/user/profile', [UserController::class, 'showProfile']);
+    Route::match(['put', 'patch'], '/user/profile', [UserController::class, 'updateProfile']);
+
+    Route::match(['put', 'patch'], '/ticket-solution/{ticketSolution}/approve', [TicketSolutionController::class, 'approve']);
+    Route::match(['put', 'patch'], '/ticket-solution/{ticketSolution}/reject', [TicketSolutionController::class, 'reject']);
 
     Route::get('/ticket-solution/{ticketSolution}/react', [ReactionController::class, 'get']);
     Route::post('/ticket-solution/{ticketSolution}/react/like', [ReactionController::class, 'like']);
     Route::post('/ticket-solution/{ticketSolution}/react/dislike', [ReactionController::class, 'dislike']);
 
     Route::get('/company/all', [CompanyController::class, 'all']);
-
-    Route::get('/company/{company}/member/select', [CompanyMemberController::class, 'getSelectList']);
 
     Route::get('contract/{contract}/service/available', [ServicesContractController::class, 'getAvailableServices']);
 
@@ -44,6 +47,3 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('contract', ContractController::class);
     Route::apiResource('contract/{contract}/service', ServicesContractController::class);
 });
-
-
-

@@ -21,7 +21,7 @@ class TicketSolutionResource extends JsonResource
             'content' => $this->content,
             'service' => $this->service,
             'owner' => $this->owner,
-            'review_date' => Carbon::parse($this->review_date)->format('Y-m-d H:i:s'),
+            'review_date' => $this->review_date !== null ? Carbon::parse($this->review_date)->format('Y-m-d H:i:s') : null,
             'keyword' => $this->keyword,
             'createdBy' => $this->createdBy,
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),

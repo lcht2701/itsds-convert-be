@@ -4,6 +4,8 @@ namespace App\Repositories\User;
 
 interface IUserRepository
 {
+    public function getOwnerList($columns = ['*'], $orderBy = 'name', $sortBy = 'asc');
+
     public function all($columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
 
     public function paginate($perPage = 15, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');

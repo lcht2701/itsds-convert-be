@@ -29,6 +29,19 @@ class UserController extends Controller
     }
 
     /**
+     * Display a owner of the ticket solution.
+     */
+    public function getOwnerList()
+    {
+        try {
+            $owners = $this->userRepository->getOwnerList();
+            return $this->sendResponse('Get Owner List', 200, UserResource::collection($owners));
+        } catch (Exception $e) {
+            return $this->sendInternalError("Error", $e);
+        }
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index()
@@ -60,7 +73,6 @@ class UserController extends Controller
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
         }
-
     }
 
     /**
@@ -112,8 +124,7 @@ class UserController extends Controller
     {
         try {
             Gate::authorize('delete', $user);
-            $this->userRepository->delete
-            ($user->id);
+            $this->userRepository->delete($user->id);
             return $this->sendResponse("User Deleted", 200);
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
@@ -127,7 +138,8 @@ class UserController extends Controller
     public function showProfile()
     {
         try {
-            $user = $this->userRepository->find(Auth::user()->id);
+            $currentUser = Auth::user();
+            $user = $this->userRepository->find($currentUser->id);
             return $this->sendResponse("Get User Profile", 200, new UserProfileResource($user));
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("User is not exist or already deleted");
@@ -136,18 +148,13 @@ class UserController extends Controller
         }
     }
 
-    public function updateProfile(UpdateUserProfileRequest $request, User $user)
+    public function updateProfile(UpdateUserProfileRequest $request)
     {
         try {
-            Gate::authorize('updateProfile', $user);
+            $currentUser = Auth::user();
+            Gate::authorize('updateProfile', $currentUser);
             $data = $request->validated();
-            // Check if a new password is provided
-            if (!empty($data['password'])) {
-                $data['password'] = Hash::make($data['password']);
-            } else {
-                unset($data['password']); // Remove password from array if not set
-            }
-            $result = $this->userRepository->update($user->id, $data);
+            $result = $this->userRepository->update($currentUser->id, $data);
             return $this->sendResponse("User Updated", 200, new UserResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");

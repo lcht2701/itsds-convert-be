@@ -6,12 +6,12 @@ use App\Models\Service;
 
 class ServiceRepository implements IServiceRepository
 {
-    public function all($columns = ['*'], $orderBy = 'id', $sortBy = 'asc')
+    public function all($columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return Service::orderBy($orderBy, $sortBy)->get($columns);
     }
 
-    public function paginate($perPage = 15, $columns = ['*'], $orderBy = 'id', $sortBy = 'asc')
+    public function paginate($perPage = 15, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return Service::orderBy($orderBy, $sortBy)->paginate($perPage, $columns);
     }

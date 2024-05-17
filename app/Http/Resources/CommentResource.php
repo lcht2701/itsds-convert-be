@@ -21,7 +21,7 @@ class CommentResource extends JsonResource
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s'),
             'ticket_solution_id' => $this->ticket_solution_id,
-            'user_id' => $this->user_id,
+            'user' => $this->user,
             // 'ticketSolution' => $this->ticketSolution,
         ];
     }

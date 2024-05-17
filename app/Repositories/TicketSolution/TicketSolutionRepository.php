@@ -3,15 +3,16 @@
 namespace App\Repositories\TicketSolution;
 
 use App\Models\TicketSolution;
+use GPBMetadata\Google\Type\Datetime;
 
 class TicketSolutionRepository implements ITicketSolutionRepository
 {
-    public function all($columns = ['*'], $orderBy = 'id', $sortBy = 'asc')
+    public function all($columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return TicketSolution::orderBy($orderBy, $sortBy)->get($columns);
     }
 
-    public function paginate($perPage = 15, $columns = ['*'], $orderBy = 'id', $sortBy = 'asc')
+    public function paginate($perPage = 15, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return TicketSolution::orderBy($orderBy, $sortBy)->paginate($perPage, $columns);
     }
@@ -42,7 +43,7 @@ class TicketSolutionRepository implements ITicketSolutionRepository
     public function approve($id)
     {
         $entity = TicketSolution::findOrFail($id);
-        $entity->created_by_id = now();
+        $entity->review_date = now();
         $entity->update();
         return $entity;
     }
@@ -50,7 +51,7 @@ class TicketSolutionRepository implements ITicketSolutionRepository
     public function reject($id)
     {
         $entity = TicketSolution::findOrFail($id);
-        $entity->created_by_id = null;
+        $entity->review_date = null;
         $entity->update();
         return $entity;
     }

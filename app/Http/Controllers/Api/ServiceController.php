@@ -26,6 +26,16 @@ class ServiceController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function getSelectList()
+    {
+        $services = $this->serviceRepository->all();
+        return $this->sendResponse("Get Service List", 200, ServiceResource::collection($services));
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
         $services = $this->serviceRepository->paginate();

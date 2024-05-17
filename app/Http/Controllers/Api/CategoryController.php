@@ -23,6 +23,12 @@ class CategoryController extends Controller
         $this->categoryRepository = $categoryRepository;
     }
 
+    public function getSelectList()
+    {
+        $categories = $this->categoryRepository->all();
+        return $this->sendResponse("Get Category Select List", 200, CategoryResource::collection($categories));
+    }
+
     /**
      * Display a listing of the resource.
      */
