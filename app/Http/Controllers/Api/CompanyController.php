@@ -30,7 +30,7 @@ class CompanyController extends Controller
     /**
      *  Get all data of the resource
      */
-    public function all()
+    public function getSelectList()
     {
         Gate::authorize('viewAny', Company::class);
         $categories = $this->companyRepository->all();

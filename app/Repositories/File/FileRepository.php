@@ -2,8 +2,9 @@
 
 namespace App\Repositories\File;
 
+use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class FileRepository implements IFileRepository
 {
@@ -16,10 +17,9 @@ class FileRepository implements IFileRepository
     {
         try {
             return Storage::disk('public')->deleteDirectory(dirname($path));
-        } catch (\Exception $e) {
-            \Log::error('Failed to delete file', ['path' => $path, 'error' => $e->getMessage()]);
+        } catch (Exception $e) {
+            Log::error('Failed to delete file', ['path' => $path, 'error' => $e->getMessage()]);
             return false;
         }
     }
-
 }

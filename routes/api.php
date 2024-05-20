@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/ticket-solution/{ticketSolution}/react/like', [ReactionController::class, 'like']);
     Route::post('/ticket-solution/{ticketSolution}/react/dislike', [ReactionController::class, 'dislike']);
 
-    Route::get('/company/all', [CompanyController::class, 'all']);
+    Route::get('/company/select', [CompanyController::class, 'getSelectList']);
 
     Route::get('contract/{contract}/service/available', [ServicesContractController::class, 'getAvailableServices']);
 

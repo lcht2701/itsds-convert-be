@@ -29,7 +29,7 @@ class StoreCompanyRequest extends FormRequest
             'company_website' => ['nullable'],
             'phone' => ['required', 'string', 'regex:/^\d+$/', 'min:10', 'max:15'],
             'email' => ['required', 'email', Rule::unique(Company::class)],
-            'logo' => ['image'],
+            'logo' => ['nullable'],
             'field_of_business' => ['nullable', 'string', 'max:255'],
         ];
     }
