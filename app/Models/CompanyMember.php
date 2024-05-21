@@ -26,6 +26,6 @@ class CompanyMember extends Model
     }
     public function companyAddress()
     {
-        return $this->belongsTo(CompanyAddress::class, 'company_addres_id');
+        return $this->belongsTo(CompanyAddress::class, 'company_address_id');
     }
 }

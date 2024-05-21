@@ -22,8 +22,6 @@ class UpdateCompanyMemberRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'member_id' => ['required', 'exists:users,id'],
-            'company_id' => ['required', 'exists:companies,id'],
             'company_address_id' => ['required', 'exists:company_addresses,id']
         ];
     }

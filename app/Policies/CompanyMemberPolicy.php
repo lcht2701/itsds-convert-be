@@ -18,7 +18,7 @@ class CompanyMemberPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, CompanyMember $companyMember): bool
+    public function view(User $user): bool
     {
         return $user->isManager() || $user->isCompanyAdmin();
     }
@@ -44,5 +44,4 @@ class CompanyMemberPolicy
     {
         return $user->isManager();
     }
-
 }

@@ -30,10 +30,11 @@ class CompanyMemberRepository implements ICompanyMemberRepository
             })->get();
     }
 
-    public function getMembersNotInCompany()
+    public function getMembersNotInCompany($companyId)
     {
+        $memberIds = CompanyMember::where('company_id', $companyId)->pluck('member_id');
         return User::where('role', UserRole::Customer)
-            ->whereDoesntHave('companyMembers')
+            ->whereNotIn("id", $memberIds)
             ->get();
     }
 
@@ -52,7 +53,7 @@ class CompanyMemberRepository implements ICompanyMemberRepository
     public function delete($id)
     {
         $address = CompanyMember::findOrFail($id);
-        $address->delete();
+        $address->forceDelete();
     }
 
     public function find($id)
