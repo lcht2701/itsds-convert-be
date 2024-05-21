@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Company;
+use App\Models\CompanyAddress;
+use App\Models\CompanyMember;
 use App\Models\Contract;
 use App\Models\Reaction;
 use App\Models\Service;
@@ -13,6 +15,8 @@ use App\Models\TicketSolution;
 use App\Models\User;
 use App\Policies\CategoryPolicy;
 use App\Policies\CommentPolicy;
+use App\Policies\CompanyAddressPolicy;
+use App\Policies\CompanyMemberPolicy;
 use App\Policies\CompanyPolicy;
 use App\Policies\ContractPolicy;
 use App\Policies\ReactionPolicy;
@@ -110,6 +114,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Service::class, ServicePolicy::class);
         Gate::policy(Reaction::class, ReactionPolicy::class);
         Gate::policy(Company::class, CompanyPolicy::class);
+        Gate::policy(CompanyAddress::class, CompanyAddressPolicy::class);
+        Gate::policy(CompanyMember::class, CompanyMemberPolicy::class);
         Gate::policy(Contract::class, ContractPolicy::class);
         Gate::policy(ServicesContract::class, ServicesContractPolicy::class);
     }

@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Gate;
+
 class CompanyMemberController extends Controller
 {
     protected $companyMemberRepository;
@@ -53,7 +54,6 @@ class CompanyMemberController extends Controller
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
         }
-
     }
 
     /**
@@ -76,10 +76,10 @@ class CompanyMemberController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(CompanyMember $companyMember)
+    public function show(CompanyMember $member)
     {
         try {
-            $result = $this->companyMemberRepository->find($companyMember->id);
+            $result = $this->companyMemberRepository->find($member->id);
             return $this->sendResponse("Get Company Member Detail", 200, new CompanyMemberResource($result));
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Company Member is not exist or already deleted");
@@ -91,12 +91,12 @@ class CompanyMemberController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCompanyMemberRequest $request, CompanyMember $companyMember)
+    public function update(UpdateCompanyMemberRequest $request, CompanyMember $member)
     {
         try {
-            Gate::authorize('update', $companyMember);
+            Gate::authorize('update', $member);
             $data = $request->validated();
-            $result = $this->companyMemberRepository->update($companyMember->id, $data);
+            $result = $this->companyMemberRepository->update($member->id, $data);
             return $this->sendResponse("Company Member Updated", 200, new CompanyMemberResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
@@ -110,11 +110,11 @@ class CompanyMemberController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(CompanyMember $companyMember)
+    public function destroy(CompanyMember $member)
     {
         try {
-            Gate::authorize('delete', $companyMember);
-            $this->companyMemberRepository->delete($companyMember->id);
+            Gate::authorize('delete', $member);
+            $this->companyMemberRepository->delete($member->id);
             return $this->sendResponse("Company Member Deleted", 200);
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");

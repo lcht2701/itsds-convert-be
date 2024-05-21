@@ -37,10 +37,13 @@ class CompanyAddressController extends Controller
     public function store(Company $company, StoreCompanyAddressRequest $request)
     {
         try {
+            Gate::authorize('create', CompanyAddress::class);
             $data = $request->validated();
             $data['company_id'] = $company->id;
             $result = $this->companyAddressRepository->create($data);
             return $this->sendResponse("Company Address Created", 200, new CompanyAddressResource($result));
+        } catch (AuthorizationException $e) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex);
         }
@@ -49,10 +52,10 @@ class CompanyAddressController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Company $company, CompanyAddress $companyAddress)
+    public function show(Company $company, CompanyAddress $address)
     {
         try {
-            $result = $this->companyAddressRepository->find($companyAddress->id);
+            $result = $this->companyAddressRepository->find($address->id);
             return $this->sendResponse("Get Company Address Detail", 200, new CompanyAddressResource($result));
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Company Address is not exist or already deleted");
@@ -64,12 +67,12 @@ class CompanyAddressController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Company $company, UpdateCompanyAddressRequest $request, CompanyAddress $companyAddress)
+    public function update(Company $company, UpdateCompanyAddressRequest $request, CompanyAddress $address)
     {
         try {
-            Gate::authorize('update', $request);
+            Gate::authorize('update', $address);
             $data = $request->validated();
-            $result = $this->companyAddressRepository->update($companyAddress->id, $data);
+            $result = $this->companyAddressRepository->update($address->id, $data);
             return $this->sendResponse("Company Address Updated", 200, new CompanyAddressResource($result));
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
@@ -83,11 +86,11 @@ class CompanyAddressController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Company $company, CompanyAddress $companyAddress)
+    public function destroy(Company $company, CompanyAddress $address)
     {
         try {
-            Gate::authorize('delete', $companyAddress);
-            $this->companyAddressRepository->delete($companyAddress->id);
+            Gate::authorize('delete', $address);
+            $this->companyAddressRepository->delete($address->id);
             return $this->sendResponse("Company Address Deleted", 200);
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
