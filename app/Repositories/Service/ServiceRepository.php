@@ -11,7 +11,7 @@ class ServiceRepository implements IServiceRepository
         return Service::orderBy($orderBy, $sortBy)->get($columns);
     }
 
-    public function paginate($perPage = 15, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
+    public function paginate($perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return Service::orderBy($orderBy, $sortBy)->paginate($perPage, $columns);
     }

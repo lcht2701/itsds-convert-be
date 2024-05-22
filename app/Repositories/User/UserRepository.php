@@ -19,7 +19,7 @@ class UserRepository implements IUserRepository
         return User::orderBy($orderBy, $sortBy)->get($columns);
     }
 
-    public function paginate($perPage = 15, $columns = ['*'], $orderBy = 'id', $sortBy = 'asc')
+    public function paginate($perPage = 10, $columns = ['*'], $orderBy = 'id', $sortBy = 'asc')
     {
         return User::orderBy($orderBy, $sortBy)->paginate($perPage, $columns);
     }

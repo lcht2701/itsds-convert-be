@@ -8,7 +8,7 @@ interface IContractRepository
 {
     public function all($columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
 
-    public function paginate($perPage = 15, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
+    public function paginate($perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
 
     public function create(array $data);
 

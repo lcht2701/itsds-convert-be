@@ -8,7 +8,7 @@ interface IServicesContractRepository
 {
     public function allByContract($contractId, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
 
-    public function paginateByContract($contractId, $perPage = 15, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
+    public function paginateByContract($contractId, $perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
 
     public function getAvailableServices($companyId, $orderBy = 'created_at', $sortBy = 'desc');
 

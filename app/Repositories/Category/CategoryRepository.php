@@ -11,7 +11,7 @@ class CategoryRepository implements ICategoryRepository
         return Category::orderBy($orderBy, $sortBy)->get($columns);
     }
 
-    public function paginate($perPage = 15, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
+    public function paginate($perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return Category::orderBy($orderBy, $sortBy)->paginate($perPage, $columns);
     }

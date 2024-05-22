@@ -12,7 +12,7 @@ class TicketSolutionRepository implements ITicketSolutionRepository
         return TicketSolution::orderBy($orderBy, $sortBy)->get($columns);
     }
 
-    public function paginate($perPage = 15, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
+    public function paginate($perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return TicketSolution::orderBy($orderBy, $sortBy)->paginate($perPage, $columns);
     }

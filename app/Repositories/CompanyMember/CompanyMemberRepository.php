@@ -15,7 +15,7 @@ class CompanyMemberRepository implements ICompanyMemberRepository
             ->get($columns);
     }
 
-    public function paginateByCompany($companyId, $perPage = 15, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
+    public function paginateByCompany($companyId, $perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return CompanyMember::where('company_id', $companyId)
             ->orderBy($orderBy, $sortBy)

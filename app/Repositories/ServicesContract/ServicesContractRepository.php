@@ -15,7 +15,7 @@ class ServicesContractRepository implements IServicesContractRepository
             ->get($columns);
     }
 
-    public function paginateByContract($contractId, $perPage = 15, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
+    public function paginateByContract($contractId, $perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return ServicesContract::where('contract_id', $contractId)
             ->orderBy($orderBy, $sortBy)
