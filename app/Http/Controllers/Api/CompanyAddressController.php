@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Collections\GenericCollection;
 use App\Http\Resources\CompanyAddressResource;
 use App\Models\Company;
 use App\Models\CompanyAddress;
@@ -27,8 +28,8 @@ class CompanyAddressController extends Controller
      */
     public function index(Company $company)
     {
-        $comments = $this->companyAddressRepository->allByCompany($company->id);
-        return $this->sendResponse("Get Company Address List", 200, CompanyAddressResource::collection($comments));
+        $addresses = $this->companyAddressRepository->paginateByCompany($company->id);
+        return $this->sendResponse("Get Company Address List", 200, new GenericCollection($addresses, CompanyAddressResource::class));
     }
 
     /**

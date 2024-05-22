@@ -34,7 +34,8 @@ class ServicesContractController extends Controller
         return $this->sendResponse(
             "Get Service List From Contract",
             200,
-            new GenericCollection($services, ServicesContractResource::class));
+            new GenericCollection($services, ServicesContractResource::class)
+        );
     }
 
     /**
@@ -46,7 +47,8 @@ class ServicesContractController extends Controller
         return $this->sendResponse(
             "Get Available Services List",
             200,
-            ServiceResource::collection($services));
+            ServiceResource::collection($services)
+        );
     }
 
     /**

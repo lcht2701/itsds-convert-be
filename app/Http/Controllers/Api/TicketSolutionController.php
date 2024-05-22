@@ -10,9 +10,9 @@ use App\Models\TicketSolution;
 use App\Http\Requests\StoreTicketSolutionRequest;
 use App\Http\Requests\UpdateTicketSolutionRequest;
 use App\Repositories\TicketSolution\ITicketSolutionRepository;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Exception;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 

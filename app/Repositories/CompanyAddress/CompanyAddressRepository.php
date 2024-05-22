@@ -6,11 +6,11 @@ use App\Models\CompanyAddress;
 
 class CompanyAddressRepository implements ICompanyAddressRepository
 {
-    public function allByCompany($companyId, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
+    public function paginateByCompany($companyId, $perPage = 5, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return CompanyAddress::where('company_id', $companyId)
             ->orderBy($orderBy, $sortBy)
-            ->get($columns);
+            ->paginate($perPage, $columns);
     }
 
 

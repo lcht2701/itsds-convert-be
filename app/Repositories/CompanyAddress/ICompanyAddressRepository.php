@@ -4,7 +4,7 @@ namespace App\Repositories\CompanyAddress;
 
 interface ICompanyAddressRepository
 {
-    public function allByCompany($companyId, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
+    public function paginateByCompany($companyId, $perPage = 5, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
 
     public function create(array $data);
 
