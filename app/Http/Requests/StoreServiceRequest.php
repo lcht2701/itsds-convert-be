@@ -24,7 +24,7 @@ class StoreServiceRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1024'],
-            'category_id' => ['optional', 'exists:categories,id']
+            'category_id' => ['nullable', 'integer', 'exists:categories,id']
         ];
     }
 }
