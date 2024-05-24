@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Collections\GenericCollection;
 use App\Http\Resources\CompanyResource;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -43,7 +45,11 @@ class CompanyController extends Controller
     public function index()
     {
         Gate::authorize('viewAny', Company::class);
-        $categories = $this->companyRepository->paginate();
+        if (Auth::user()->role === UserRole::Manager) {
+            $categories = $this->companyRepository->paginate();
+        } else {
+            $categories = $this->companyRepository->paginateByUser(Auth::user()->role);
+        }
         return $this->sendResponse("Get Company List", 200, new GenericCollection($categories, CompanyResource::class));
     }
 

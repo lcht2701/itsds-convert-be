@@ -16,6 +16,16 @@ class CompanyRepository implements ICompanyRepository
         return Company::orderBy($orderBy, $sortBy)->paginate($perPage, $columns);
     }
 
+    public function paginateByUser($userId, $perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
+    {
+        return Company::whereHas('companyMembers', function ($query) use ($userId) {
+            $query->where('member_id', $userId);
+        })
+            ->orderBy($orderBy, $sortBy)
+            ->paginate($perPage, $columns);
+    }
+
+
     public function create(array $data)
     {
         return Company::create($data);
