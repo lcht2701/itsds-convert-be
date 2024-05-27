@@ -33,7 +33,7 @@ class CompanyMemberRepository implements ICompanyMemberRepository
     public function getMembersNotInCompany($companyId)
     {
         $memberIds = CompanyMember::where('company_id', $companyId)->pluck('member_id');
-        return User::where('role', UserRole::Customer)
+        return User::whereIn('role', [UserRole::Customer, UserRole::CompanyAdmin])
             ->whereNotIn("id", $memberIds)
             ->get();
     }

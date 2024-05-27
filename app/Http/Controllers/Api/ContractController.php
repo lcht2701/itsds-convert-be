@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\ContractStatus;
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Collections\GenericCollection;
 use App\Http\Resources\ContractResource;
@@ -13,6 +14,7 @@ use App\Repositories\Contract\IContractRepository;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class ContractController extends Controller
@@ -30,7 +32,11 @@ class ContractController extends Controller
     public function index()
     {
         Gate::authorize('viewAny', Contract::class);
-        $contracts = $this->contractRepository->paginate();
+        if (Auth::user()->role === UserRole::Manager) {
+            $contracts = $this->contractRepository->paginate();
+        } else {
+            $contracts = $this->contractRepository->paginateByUser(Auth::user()->id);
+        }
         return $this->sendResponse("Get Contract List", 200, new GenericCollection($contracts, ContractResource::class));
     }
 

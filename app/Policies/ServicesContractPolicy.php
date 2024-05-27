@@ -13,7 +13,7 @@ class ServicesContractPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isManager();
+        return $user->isManager() || $user->isCompanyAdmin();
     }
 
     /**
@@ -21,7 +21,7 @@ class ServicesContractPolicy
      */
     public function view(User $user, ServicesContract $servicesContract): bool
     {
-        return $user->isManager();
+        return $user->isManager() || $user->isCompanyAdmin();
     }
 
     /**

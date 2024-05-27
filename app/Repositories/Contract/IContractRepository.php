@@ -10,6 +10,8 @@ interface IContractRepository
 
     public function paginate($perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
 
+    public function paginateByUser($userId, $perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
+
     public function create(array $data);
 
     public function update($id, array $data);

@@ -48,7 +48,7 @@ class CompanyController extends Controller
         if (Auth::user()->role === UserRole::Manager) {
             $categories = $this->companyRepository->paginate();
         } else {
-            $categories = $this->companyRepository->paginateByUser(Auth::user()->role);
+            $categories = $this->companyRepository->paginateByUser(Auth::user()->id);
         }
         return $this->sendResponse("Get Company List", 200, new GenericCollection($categories, CompanyResource::class));
     }

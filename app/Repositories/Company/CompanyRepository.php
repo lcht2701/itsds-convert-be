@@ -3,6 +3,7 @@
 namespace App\Repositories\Company;
 
 use App\Models\Company;
+use App\Models\CompanyMember;
 
 class CompanyRepository implements ICompanyRepository
 {
@@ -23,9 +24,7 @@ class CompanyRepository implements ICompanyRepository
 
     public function paginateByUser($userId, $perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
-        return Company::whereHas('companyMembers', function ($query) use ($userId) {
-            $query->where('member_id', $userId);
-        })
+        return Company::where('id', CompanyMember::where('member_id', $userId)->pluck('company_id'))
             ->orderBy($orderBy, $sortBy)
             ->paginate($perPage, $columns);
     }

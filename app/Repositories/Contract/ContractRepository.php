@@ -3,6 +3,8 @@
 namespace App\Repositories\Contract;
 
 use App\Enums\ContractStatus;
+use App\Models\Company;
+use App\Models\CompanyMember;
 use App\Models\Contract;
 use Carbon\Carbon;
 
@@ -16,6 +18,16 @@ class ContractRepository implements IContractRepository
     public function paginate($perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return Contract::orderBy($orderBy, $sortBy)->paginate($perPage, $columns);
+    }
+
+    public function paginateByUser($userId, $perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
+    {
+        return Contract::whereIn(
+            'company_id',
+            CompanyMember::where('member_id', $userId)->pluck('company_id')
+        )
+            ->orderBy($orderBy, $sortBy)
+            ->paginate($perPage, $columns);
     }
 
     public function create(array $data)
