@@ -35,7 +35,7 @@ class CompanyController extends Controller
     public function getSelectList()
     {
         Gate::authorize('viewAny', Company::class);
-        $categories = $this->companyRepository->all();
+        $categories = $this->companyRepository->getSelectList();
         return $this->sendResponse("Get All Company", 200, CompanyResource::collection($categories));
     }
 

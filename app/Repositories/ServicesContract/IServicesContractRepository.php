@@ -3,6 +3,7 @@
 namespace App\Repositories\ServicesContract;
 
 use App\Http\Requests\StoreServicesContractRequest;
+use App\Models\Contract;
 
 interface IServicesContractRepository
 {
@@ -10,9 +11,11 @@ interface IServicesContractRepository
 
     public function paginateByContract($contractId, $perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
 
-    public function getAvailableServices($companyId, $orderBy = 'created_at', $sortBy = 'desc');
+    public function getAvailableServices($contractId, $orderBy = 'name', $sortBy = 'asc');
 
-    public function addAndUpdate(StoreServicesContractRequest $request);
+    public function getSelectList($contractId, $orderBy = 'name', $sortBy = 'asc');
+
+    public function add($contractId, array $request);
 
     public function delete($id);
 

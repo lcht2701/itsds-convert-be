@@ -24,7 +24,7 @@ class StoreContractRequest extends FormRequest
         return [
             'contract_num' => ['required', 'string'],
             'name' => ['required', 'string', 'max:255'],
-            'description' => ['string', 'max:1024'],
+            'description' => ['nullable', 'string', 'max:1024'],
             'company_id' => ['required', 'exists:companies,id'],
             'start_date' => ['required', 'date'],
             'duration' => ['required', 'in:3,6,9,12,18,24,36'],

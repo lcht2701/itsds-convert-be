@@ -6,6 +6,11 @@ use App\Models\Company;
 
 class CompanyRepository implements ICompanyRepository
 {
+    public function getSelectList($columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
+    {
+        return Company::where("is_active", true)->orderBy($orderBy, $sortBy)->get($columns);
+    }
+
     public function all($columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return Company::orderBy($orderBy, $sortBy)->get($columns);

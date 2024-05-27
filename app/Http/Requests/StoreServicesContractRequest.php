@@ -22,9 +22,8 @@ class StoreServicesContractRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'services' => ['required', 'array'],
-            'services.*.id' => ['exists:services,id'],
-            'contract_id' => ['required', 'exists:contracts,id']
+            'serviceIds' => ['required', 'array'],
+            'serviceIds.*' => ['required', 'integer'],
         ];
     }
 }

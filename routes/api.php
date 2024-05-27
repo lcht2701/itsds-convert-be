@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/company/select', [CompanyController::class, 'getSelectList']);
 
     Route::get('contract/{contract}/service/available', [ServicesContractController::class, 'getAvailableServices']);
+    Route::get('contract/{contract}/service/select', [ServicesContractController::class, 'getSelectList']);
 
     //General Route
     Route::apiResource('category', CategoryController::class);

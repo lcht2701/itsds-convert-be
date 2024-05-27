@@ -24,13 +24,11 @@ class UpdateContractRequest extends FormRequest
         return [
             'contract_num' => ['sometimes', 'required', 'string'],
             'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'description' => ['string', 'max:1024'],
+            'description' => ['nullable', 'string', 'max:1024'],
             'company_id' => ['sometimes', 'required', 'exists:companies,id'],
             'start_date' => ['sometimes', 'required', 'date'],
             'duration' => ['sometimes', 'required', 'in:3,6,9,12,18,24,36'],
             'value' => ['sometimes', 'required', 'numeric', 'min:1000'],
-            'service_ids' => ['sometimes', 'required', 'array'],
-            'service_ids.*' => ['exists:services,id']
         ];
     }
 }

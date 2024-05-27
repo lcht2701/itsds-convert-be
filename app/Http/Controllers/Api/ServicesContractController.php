@@ -51,33 +51,43 @@ class ServicesContractController extends Controller
         );
     }
 
+    public function getSelectList(Contract $contract)
+    {
+        $services = $this->servicesContractRepository->getSelectList($contract->id);
+        return $this->sendResponse(
+            "Get Select List",
+            200,
+            ServiceResource::collection($services)
+        );
+    }
+
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreServicesContractRequest $request)
+    public function store(Contract $contract, StoreServicesContractRequest $request)
     {
         try {
             Gate::authorize('create', ServicesContract::class);
             $data = $request->validated();
-            $result = $this->servicesContractRepository->addAndUpdate($data);
-            return $this->sendResponse("Service Created", 200, new ServiceResource($result));
-        } catch (AuthorizationException $e) {
+            $result = $this->servicesContractRepository->add($contract->id, $data);
+            return $this->sendResponse("Service Created", 200, $result);
+        } catch (AuthorizationException $ex) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Service is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ServicesContract $servicesContractsContract)
+    public function show(Contract $contract, ServicesContract $service)
     {
         try {
             Gate::authorize('view', ServicesContract::class);
-            $result = $this->servicesContractRepository->find($servicesContractsContract->id);
+            $result = $this->servicesContractRepository->find($service->id);
             return $this->sendResponse("Get Service Detail", 200, new ServiceResource($result));
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Service is not exist or already deleted");
@@ -89,11 +99,11 @@ class ServicesContractController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ServicesContract $servicesContractsContract)
+    public function destroy(Contract $contract, ServicesContract $service)
     {
         try {
-            Gate::authorize('delete', $servicesContractsContract);
-            $this->servicesContractRepository->delete($servicesContractsContract->id);
+            Gate::authorize('delete', $service);
+            $this->servicesContractRepository->delete($service->id);
             return $this->sendResponse("Service Deleted", 200);
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");

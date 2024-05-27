@@ -3,6 +3,7 @@
 namespace App\Repositories\ServicesContract;
 
 use App\Http\Requests\StoreServicesContractRequest;
+use App\Models\Contract;
 use App\Models\Service;
 use App\Models\ServicesContract;
 
@@ -22,13 +23,13 @@ class ServicesContractRepository implements IServicesContractRepository
             ->paginate($perPage, $columns);
     }
 
-    public function getAvailableServices($companyId, $orderBy = 'name', $sortBy = 'asc')
+    public function getAvailableServices($contractId, $orderBy = 'name', $sortBy = 'asc')
     {
-        $services = Service::whereIn('id', function ($query) use ($companyId) {
+        $services = Service::whereIn('id', function ($query) use ($contractId) {
             $query
                 ->select('service_id')
                 ->from('services_contracts')
-                ->where('company_id', $companyId);
+                ->where('contract_id', $contractId);
         })
             ->orderBy($orderBy, $sortBy)
             ->get();
@@ -36,41 +37,43 @@ class ServicesContractRepository implements IServicesContractRepository
         return $services;
     }
 
-    public function addAndUpdate(StoreServicesContractRequest $request)
+    public function getSelectList($contractId, $orderBy = 'name', $sortBy = 'asc')
     {
-        $contractId = $request['contract_id'];
-        $serviceIds = array_map(function ($service) {
-            return $service['id'];
-        }, $request['services']);
+        $services = Service::whereNotIn('id', function ($query) use ($contractId) {
+            $query
+                ->select('service_id')
+                ->from('services_contracts')
+                ->where('contract_id', $contractId);
+        })
+            ->orderBy($orderBy, $sortBy)
+            ->get();
 
-        $existingServices = ServicesContract::where('contract_id', $contractId)->get();
-        $existingServiceIds = $existingServices->pluck('service_id')->toArray();
+        return $services;
+    }
+
+    public function add($contractId, array $request)
+    {
+        $serviceIds = $request['serviceIds'];
+        $servicesToAdd = [];
 
         if (count($serviceIds) > 0) {
-            $servicesToRemove = $existingServices->whereNotIn('service_id', $serviceIds);
-            ServicesContract::destroy($servicesToRemove->pluck('id')->toArray());
 
-            $serviceIdsToAdd = array_diff($serviceIds, $existingServiceIds);
-            $servicesToAdd = [];
-            foreach ($serviceIdsToAdd as $serviceId) {
-                $servicesToAdd[] = new ServicesContract([
+            foreach ($serviceIds as $serviceId) {
+                $newService = ServicesContract::create([
                     'contract_id' => $contractId,
                     'service_id' => $serviceId,
                 ]);
+                array_push($servicesToAdd, $newService);
             }
-
-            ServicesContract::insert($servicesToAdd);
-        } else {
-            ServicesContract::where('contract_id', $contractId)->delete();
         }
-
-        return;
+        return $servicesToAdd;
     }
+
 
     public function delete($id)
     {
         $servicesContract = ServicesContract::findOrFail($id);
-        $servicesContract->delete();
+        $servicesContract->forceDelete();
     }
 
     public function find($id)

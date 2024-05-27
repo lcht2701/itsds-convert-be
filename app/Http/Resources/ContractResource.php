@@ -19,6 +19,7 @@ class ContractResource extends JsonResource
         $endDate = $startDate->copy()->addMonths($this->duration);
 
         return [
+            'id' => $this->id,
             'contract_num' => $this->contract_num,
             'name' => $this->name,
             'description' => $this->description,
