@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ContractController;
 use App\Http\Controllers\Api\ReactionController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\ServicesContractController;
+use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\TicketSolutionController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -25,7 +26,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::match(['put', 'patch'], '/user/profile', [UserController::class, 'updateProfile']);
 
     Route::match(['put', 'patch'], '/ticket-solution/{ticketSolution}/approve', [TicketSolutionController::class, 'approve']);
-    Route::match(['put', 'patch'], '/ticket-solution/{ticketSolution}/reject', [TicketSolutionController::class, 'reject']);
+    Route::match(['put', 'patch'], '/ticket-solution/{ticketSolution}/approve', [TicketSolutionController::class, 'approve']);
+
+    Route::post('/ticket/customer', [TicketController::class, 'storeByCustomer']);
+    Route::match(['put', 'patch'], '/ticket/{ticket}/customer', [TicketController::class, 'updateByCustomer']);
+    Route::match(['put', 'patch'], '/ticket/{ticket}/update-status', [TicketController::class, 'updateStatus']);
+    Route::match(['put', 'patch'], '/ticket/{ticket}/customer-cancel', [TicketController::class, 'cancelTicket']);
 
     Route::get('/ticket-solution/{ticketSolution}/react', [ReactionController::class, 'get']);
     Route::post('/ticket-solution/{ticketSolution}/react/like', [ReactionController::class, 'like']);
@@ -47,4 +53,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('company/{company}/member', CompanyMemberController::class);
     Route::apiResource('contract', ContractController::class);
     Route::apiResource('contract/{contract}/service', ServicesContractController::class);
+    Route::apiResource('ticket', TicketController::class);
 });

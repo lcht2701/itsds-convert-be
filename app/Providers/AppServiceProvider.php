@@ -11,6 +11,7 @@ use App\Models\Contract;
 use App\Models\Reaction;
 use App\Models\Service;
 use App\Models\ServicesContract;
+use App\Models\Ticket;
 use App\Models\TicketSolution;
 use App\Models\User;
 use App\Policies\CategoryPolicy;
@@ -22,6 +23,7 @@ use App\Policies\ContractPolicy;
 use App\Policies\ReactionPolicy;
 use App\Policies\ServicePolicy;
 use App\Policies\ServicesContractPolicy;
+use App\Policies\TicketPolicy;
 use App\Policies\TicketSolutionPolicy;
 use App\Policies\UserPolicy;
 use App\Repositories\Category\CategoryRepository;
@@ -118,5 +120,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(CompanyMember::class, CompanyMemberPolicy::class);
         Gate::policy(Contract::class, ContractPolicy::class);
         Gate::policy(ServicesContract::class, ServicesContractPolicy::class);
+        Gate::policy(Ticket::class, TicketPolicy::class);
     }
 }

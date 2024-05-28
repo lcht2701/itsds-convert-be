@@ -8,6 +8,8 @@ use App\Enums\TicketStatus;
 use App\Enums\TicketType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ticket extends Model
@@ -39,5 +41,15 @@ class Ticket extends Model
     public function requester()
     {
         return $this->belongsTo(User::class, 'requester_id');
+    }
+
+    public function assignment(): HasOne
+    {
+        return $this->hasOne(Assignment::class);
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(TicketTask::class);
     }
 }
