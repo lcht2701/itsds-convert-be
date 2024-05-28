@@ -13,6 +13,7 @@ use App\Models\Service;
 use App\Models\ServicesContract;
 use App\Models\Ticket;
 use App\Models\TicketSolution;
+use App\Models\TicketTask;
 use App\Models\User;
 use App\Policies\CategoryPolicy;
 use App\Policies\CommentPolicy;
@@ -25,6 +26,7 @@ use App\Policies\ServicePolicy;
 use App\Policies\ServicesContractPolicy;
 use App\Policies\TicketPolicy;
 use App\Policies\TicketSolutionPolicy;
+use App\Policies\TicketTaskPolicy;
 use App\Policies\UserPolicy;
 use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Category\ICategoryRepository;
@@ -46,8 +48,12 @@ use App\Repositories\Service\IServiceRepository;
 use App\Repositories\Service\ServiceRepository;
 use App\Repositories\ServicesContract\IServicesContractRepository;
 use App\Repositories\ServicesContract\ServicesContractRepository;
+use App\Repositories\Ticket\ITicketRepository;
+use App\Repositories\Ticket\TicketRepository;
 use App\Repositories\TicketSolution\ITicketSolutionRepository;
 use App\Repositories\TicketSolution\TicketSolutionRepository;
+use App\Repositories\TicketTask\ITicketTaskRepository;
+use App\Repositories\TicketTask\TicketTaskRepository;
 use App\Repositories\User\IUserRepository;
 use App\Repositories\User\UserRepository;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -74,6 +80,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ICompanyMemberRepository::class, CompanyMemberRepository::class);
         $this->app->bind(IContractRepository::class, ContractRepository::class);
         $this->app->bind(IServicesContractRepository::class, ServicesContractRepository::class);
+        $this->app->bind(ITicketRepository::class, TicketRepository::class);
+        $this->app->bind(ITicketTaskRepository::class, TicketTaskRepository::class);
     }
 
     /**
@@ -121,5 +129,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Contract::class, ContractPolicy::class);
         Gate::policy(ServicesContract::class, ServicesContractPolicy::class);
         Gate::policy(Ticket::class, TicketPolicy::class);
+        Gate::policy(TicketTask::class, TicketTaskPolicy::class);
     }
 }

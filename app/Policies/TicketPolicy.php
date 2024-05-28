@@ -57,7 +57,7 @@ class TicketPolicy
     public function update(User $user, Ticket $ticket): bool
     {
         return ($user->isManager() || $user->isTechnician()) &&
-            ($ticket->ticketStatus !== TicketStatus::Closed ||
+            ($ticket->ticketStatus !== TicketStatus::Closed &&
                 $ticket->ticketStatus !== TicketStatus::Cancelled);
     }
 

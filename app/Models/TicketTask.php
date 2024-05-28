@@ -16,7 +16,7 @@ class TicketTask extends Model
         'ticket_id', 'title', 'description',
         'note', 'priority', 'start_time',
         'end_time', 'progress', 'task_status',
-        'created_by_id'
+        'create_by_id'
     ];
 
     protected function casts(): array
@@ -34,6 +34,6 @@ class TicketTask extends Model
 
     public function createdBy()
     {
-        return $this->belongsTo(User::class, 'created_by_id');
+        return $this->belongsTo(User::class, 'create_by_id');
     }
 }

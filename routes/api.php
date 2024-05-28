@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\ServicesContractController;
 use App\Http\Controllers\Api\TicketController;
 use App\Http\Controllers\Api\TicketSolutionController;
+use App\Http\Controllers\Api\TicketTaskController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::match(['put', 'patch'], '/ticket/{ticket}/update-status', [TicketController::class, 'updateStatus']);
     Route::match(['put', 'patch'], '/ticket/{ticket}/customer-cancel', [TicketController::class, 'cancelTicket']);
 
+    Route::match(['put', 'patch'], '/ticket/{ticket}/ticket-task/{ticketTask}/update-status', [TicketTaskController::class, 'updateStatus']);
+
     Route::get('/ticket-solution/{ticketSolution}/react', [ReactionController::class, 'get']);
     Route::post('/ticket-solution/{ticketSolution}/react/like', [ReactionController::class, 'like']);
     Route::post('/ticket-solution/{ticketSolution}/react/dislike', [ReactionController::class, 'dislike']);
@@ -54,4 +57,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('contract', ContractController::class);
     Route::apiResource('contract/{contract}/service', ServicesContractController::class);
     Route::apiResource('ticket', TicketController::class);
+    Route::apiResource('ticket/{ticket}/ticket-task', TicketTaskController::class);
 });

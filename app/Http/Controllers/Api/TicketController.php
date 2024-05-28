@@ -53,6 +53,8 @@ class TicketController extends Controller
                     break;
             }
             return $this->sendResponse("Get Ticket List", 200, new GenericCollection($tickets, TicketResource::class));
+        } catch (AuthorizationException) {
+            return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex->getMessage());
         }
@@ -125,7 +127,7 @@ class TicketController extends Controller
         } catch (AuthorizationException) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (ModelNotFoundException) {
-            return $this->sendNotFound("Contract is not exist or already deleted");
+            return $this->sendNotFound("Ticket is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex->getMessage());
         }
