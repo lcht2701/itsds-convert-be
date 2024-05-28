@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AssignmentController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\CompanyAddressController;
@@ -36,6 +37,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::match(['put', 'patch'], '/ticket/{ticket}/ticket-task/{ticketTask}/update-status', [TicketTaskController::class, 'updateStatus']);
 
+    Route::get('/ticket/{ticket}/assign/technicians', [AssignmentController::class, 'getTechnicians']);
+
     Route::get('/ticket-solution/{ticketSolution}/react', [ReactionController::class, 'get']);
     Route::post('/ticket-solution/{ticketSolution}/react/like', [ReactionController::class, 'like']);
     Route::post('/ticket-solution/{ticketSolution}/react/dislike', [ReactionController::class, 'dislike']);
@@ -58,4 +61,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('contract/{contract}/service', ServicesContractController::class);
     Route::apiResource('ticket', TicketController::class);
     Route::apiResource('ticket/{ticket}/ticket-task', TicketTaskController::class);
+    Route::apiResource('ticket/{ticket}/assign', AssignmentController::class);
 });

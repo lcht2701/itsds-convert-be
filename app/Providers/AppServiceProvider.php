@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Assignment;
 use App\Models\Category;
 use App\Models\Comment;
 use App\Models\Company;
@@ -15,6 +16,7 @@ use App\Models\Ticket;
 use App\Models\TicketSolution;
 use App\Models\TicketTask;
 use App\Models\User;
+use App\Policies\AssignmentPolicy;
 use App\Policies\CategoryPolicy;
 use App\Policies\CommentPolicy;
 use App\Policies\CompanyAddressPolicy;
@@ -28,6 +30,8 @@ use App\Policies\TicketPolicy;
 use App\Policies\TicketSolutionPolicy;
 use App\Policies\TicketTaskPolicy;
 use App\Policies\UserPolicy;
+use App\Repositories\Assignment\AssignmentRepository;
+use App\Repositories\Assignment\IAssignmentRepository;
 use App\Repositories\Category\CategoryRepository;
 use App\Repositories\Category\ICategoryRepository;
 use App\Repositories\Comment\CommentRepository;
@@ -82,6 +86,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(IServicesContractRepository::class, ServicesContractRepository::class);
         $this->app->bind(ITicketRepository::class, TicketRepository::class);
         $this->app->bind(ITicketTaskRepository::class, TicketTaskRepository::class);
+        $this->app->bind(IAssignmentRepository::class, AssignmentRepository::class);
     }
 
     /**
@@ -130,5 +135,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(ServicesContract::class, ServicesContractPolicy::class);
         Gate::policy(Ticket::class, TicketPolicy::class);
         Gate::policy(TicketTask::class, TicketTaskPolicy::class);
+        Gate::policy(Assignment::class, AssignmentPolicy::class);
     }
 }

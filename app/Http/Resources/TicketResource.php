@@ -25,8 +25,8 @@ class TicketResource extends JsonResource
             'impact_detail' => $this->impact_detail,
             'type' => $this->type,
             'completed_time' => Carbon::parse($this->completed_time)->format('Y-m-d H:i:s'),
-            'requester' => $this->requester,
-            'service' => $this->service,
+            'requester' => new UserResource($this->requester),
+            'service' => new ServiceResource($this->service),
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i:s'),
         ];
