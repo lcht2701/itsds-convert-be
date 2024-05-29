@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::match(['put', 'patch'], '/ticket-solution/{ticketSolution}/approve', [TicketSolutionController::class, 'approve']);
     Route::match(['put', 'patch'], '/ticket-solution/{ticketSolution}/approve', [TicketSolutionController::class, 'approve']);
 
+    Route::get('/ticket/available-service/{user}', [TicketController::class, 'getAvailableServices']);
     Route::post('/ticket/customer', [TicketController::class, 'storeByCustomer']);
     Route::match(['put', 'patch'], '/ticket/{ticket}/customer', [TicketController::class, 'updateByCustomer']);
     Route::match(['put', 'patch'], '/ticket/{ticket}/update-status', [TicketController::class, 'updateStatus']);
@@ -45,7 +46,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/company/select', [CompanyController::class, 'getSelectList']);
 
-    Route::get('contract/{contract}/service/available', [ServicesContractController::class, 'getAvailableServices']);
     Route::get('contract/{contract}/service/select', [ServicesContractController::class, 'getSelectList']);
 
     //General Route

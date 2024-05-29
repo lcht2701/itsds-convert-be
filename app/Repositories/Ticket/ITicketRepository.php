@@ -4,6 +4,8 @@ namespace App\Repositories\Ticket;
 
 interface ITicketRepository
 {
+    public function getAvailableServices($userId, $columns = ['*'], $orderBy = 'name', $sortBy = 'asc');
+
     public function getSelectList($columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');
 
     public function all($columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc');

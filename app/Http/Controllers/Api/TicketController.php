@@ -10,9 +10,11 @@ use App\Http\Requests\UpdateTicketCustomerRequest;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Resources\Collections\GenericCollection;
+use App\Http\Resources\ServiceResource;
 use App\Http\Resources\TicketResource;
 use App\Jobs\AssignTicket;
 use App\Models\Ticket;
+use App\Models\User;
 use App\Repositories\Ticket\ITicketRepository;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -28,6 +30,19 @@ class TicketController extends Controller
     public function __construct(ITicketRepository $ticketRepository)
     {
         $this->ticketRepository = $ticketRepository;
+    }
+
+    /**
+     * Display a listing of the available services to select in a ticket.
+     */
+    public function getAvailableServices(User $user)
+    {
+        $services = $this->ticketRepository->getAvailableServices($user->id);
+        return $this->sendResponse(
+            "Get Available Services List",
+            200,
+            ServiceResource::collection($services)
+        );
     }
 
     /**

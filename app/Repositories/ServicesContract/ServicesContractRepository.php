@@ -2,8 +2,6 @@
 
 namespace App\Repositories\ServicesContract;
 
-use App\Http\Requests\StoreServicesContractRequest;
-use App\Models\Contract;
 use App\Models\Service;
 use App\Models\ServicesContract;
 
@@ -21,20 +19,6 @@ class ServicesContractRepository implements IServicesContractRepository
         return ServicesContract::where('contract_id', $contractId)
             ->orderBy($orderBy, $sortBy)
             ->paginate($perPage, $columns);
-    }
-
-    public function getAvailableServices($contractId, $orderBy = 'name', $sortBy = 'asc')
-    {
-        $services = Service::whereIn('id', function ($query) use ($contractId) {
-            $query
-                ->select('service_id')
-                ->from('services_contracts')
-                ->where('contract_id', $contractId);
-        })
-            ->orderBy($orderBy, $sortBy)
-            ->get();
-
-        return $services;
     }
 
     public function getSelectList($contractId, $orderBy = 'name', $sortBy = 'asc')

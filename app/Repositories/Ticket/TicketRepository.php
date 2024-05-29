@@ -2,8 +2,12 @@
 
 namespace App\Repositories\Ticket;
 
+use App\Enums\ContractStatus;
 use App\Enums\TicketStatus;
 use App\Models\Assignment;
+use App\Models\CompanyMember;
+use App\Models\Contract;
+use App\Models\Service;
 use App\Models\Ticket;
 use App\Models\TicketTask;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -11,6 +15,29 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class TicketRepository implements ITicketRepository
 {
+    public function getAvailableServices($userId, $columns = ['*'], $orderBy = 'name', $sortBy = 'asc')
+    {
+        $companyId = CompanyMember::where('member_id', $userId)
+            ->firstOrFail()
+            ->get('company_id');
+
+        $activeContractIds = Contract::where('company_id', $companyId)
+            ->where('status', ContractStatus::Active)
+            ->pluck('id');
+
+        $services = Service::whereIn('id', function ($query) use ($activeContractIds) {
+            $query
+                ->select('service_id')
+                ->from('services_contracts')
+                ->whereIn('contract_id', $activeContractIds);
+        })
+            ->distinct()
+            ->orderBy($orderBy, $sortBy)
+            ->get($columns);
+
+        return $services;
+    }
+
     public function getSelectList($columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
         return Ticket::orderBy($orderBy, $sortBy)->get($columns);

@@ -38,19 +38,6 @@ class ServicesContractController extends Controller
         );
     }
 
-    /**
-     * Display a listing of the available servicesContracts to select in a ticket.
-     */
-    public function getAvailableServices(Contract $contract)
-    {
-        $services = $this->servicesContractRepository->getAvailableServices($contract->id);
-        return $this->sendResponse(
-            "Get Available Services List",
-            200,
-            ServiceResource::collection($services)
-        );
-    }
-
     public function getSelectList(Contract $contract)
     {
         $services = $this->servicesContractRepository->getSelectList($contract->id);
