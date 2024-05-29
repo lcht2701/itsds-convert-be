@@ -11,6 +11,7 @@ use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Resources\Collections\GenericCollection;
 use App\Http\Resources\TicketResource;
+use App\Jobs\AssignTicket;
 use App\Models\Ticket;
 use App\Repositories\Ticket\ITicketRepository;
 use Exception;
@@ -141,10 +142,9 @@ class TicketController extends Controller
         try {
             Gate::authorize('create', Ticket::class);
             $data = $request->validated();
-            //Create a job to auto assign
-            $data['ticketStatus'] = TicketStatus::Assigned;
             $result = $this->ticketRepository->create($data);
-            return $this->sendResponse("Ticket Created", 200, new TicketResource($result));
+            AssignTicket::dispatch($result);
+            return $this->sendResponse("Ticket Created and Assigned", 200, new TicketResource($result));
         } catch (AuthorizationException) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (Exception $ex) {

@@ -6,6 +6,7 @@ use App\Enums\TicketStatus;
 use App\Models\Assignment;
 use App\Models\Ticket;
 use App\Models\TicketTask;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class TicketRepository implements ITicketRepository
@@ -66,6 +67,9 @@ class TicketRepository implements ITicketRepository
     public function updateStatus($id)
     {
         $ticket = Ticket::findOrFail($id);
+        if (in_array($ticket->ticketStatus, [TicketStatus::Closed, TicketStatus::Cancelled])) {
+            throw new BadRequestException('Status cannot be updated due to ticket is already cancelled or closed');
+        }
 
         switch ($ticket->ticketStatus) {
             case TicketStatus::Assigned:
@@ -79,7 +83,7 @@ class TicketRepository implements ITicketRepository
                 if ($tasksCount > 0) {
                     throw new BadRequestHttpException('All tasks must be completed before being resolved!!!');
                 } else {
-                    //Create Jobs to automatically close ticket
+                    $ticket->ticketStatus = TicketStatus::Closed;
                 }
                 break;
         }
