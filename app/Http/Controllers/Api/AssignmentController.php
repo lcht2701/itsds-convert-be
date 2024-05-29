@@ -48,6 +48,10 @@ class AssignmentController extends Controller
         try {
             Gate::authorize('create', Assignment::class);
             $data = $request->validated();
+            //Kiem tra ticket da duoc phan cong, neu co thi tien hanh xoa de phan cong moi
+            $assigment = $this->assignmentRepository->findByTicket($ticket->id);
+            if ($assigment) $this->assignmentRepository->delete($assigment);
+            //Tao Assignment moi
             $data['ticket_id'] = $ticket->id;
             $result = $this->assignmentRepository->create($data);
             return $this->sendResponse("Ticket Assigned", 200, new AssignmentResource($result));
