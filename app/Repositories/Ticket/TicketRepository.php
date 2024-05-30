@@ -19,7 +19,7 @@ class TicketRepository implements ITicketRepository
     {
         $companyId = CompanyMember::where('member_id', $userId)
             ->firstOrFail()
-            ->get('company_id');
+            ->value('company_id');
 
         $activeContractIds = Contract::where('company_id', $companyId)
             ->where('status', ContractStatus::Active)

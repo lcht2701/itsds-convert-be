@@ -41,6 +41,16 @@ class UserController extends Controller
         }
     }
 
+    public function getRequesterList()
+    {
+        try {
+            $requesters = $this->userRepository->getRequesterList();
+            return $this->sendResponse('Get Requester List', 200, UserResource::collection($requesters));
+        } catch (Exception $e) {
+            return $this->sendInternalError("Error", $e);
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */

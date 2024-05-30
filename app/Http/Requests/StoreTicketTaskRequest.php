@@ -27,7 +27,10 @@ class StoreTicketTaskRequest extends FormRequest
             'title' => ['required', 'string', 'max:1024'],
             'description' => ['nullable', 'string', 'max:5000'],
             'priority' => ['required', Rule::enum(TaskStatus::class)],
-            'start_time' => ['required', 'date', 'before:today'],
+            'start_time' => ['required', 'date'],
+            'note' => ['nullable', 'string', 'max:5000'],
+            'end_time' => ['sometimes', 'required', 'date', 'after:start_time'],
+            'progress' => ['sometimes', 'numeric', 'between:0,100'],
         ];
     }
 }

@@ -32,7 +32,7 @@ class Contract extends Model
     /**
      * Get the company associated with the Contract
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function company()
     {

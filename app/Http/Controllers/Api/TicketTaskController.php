@@ -64,7 +64,7 @@ class TicketTaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(TicketTask $ticketTask)
+    public function show(Ticket $ticket, TicketTask $ticketTask)
     {
         try {
             Gate::authorize('view', $ticketTask);

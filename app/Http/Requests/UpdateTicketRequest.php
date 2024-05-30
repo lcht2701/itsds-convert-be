@@ -26,7 +26,6 @@ class UpdateTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'requester_id' => ['required', 'exists:users,id'],
             'service_id' => ['required', 'exists:services,id'],
             'title' => ['required', 'string', 'max:1024'],
             'description' => ['nullable', 'string', 'max:5000'],

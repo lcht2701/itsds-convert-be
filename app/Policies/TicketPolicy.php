@@ -14,7 +14,7 @@ class TicketPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isCustomer() || $user->isCompanyAdmin() || $user->isManager();
+        return $user->isCustomer() || $user->isCompanyAdmin() || $user->isManager() || $user->isTechnician();
     }
 
     /**
@@ -22,7 +22,7 @@ class TicketPolicy
      */
     public function view(User $user, Ticket $ticket): bool
     {
-        return $user->isCustomer() || $user->isCompanyAdmin() || $user->isManager();
+        return $user->isCustomer() || $user->isCompanyAdmin() || $user->isManager() || $user->isTechnician();
     }
 
     /**
@@ -46,7 +46,7 @@ class TicketPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function createByManager(User $user): bool
+    public function create(User $user): bool
     {
         return $user->isManager() || $user->isTechnician();
     }

@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -14,14 +15,14 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('requester_id')->constrained('users');
             $table->string('title');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->foreignId('service_id')->constrained('services');
             $table->integer('ticketStatus')->default(0);
-            $table->integer('priority');
-            $table->dateTime('completed_time');
-            $table->integer('impact');
-            $table->string('impact_detail');
-            $table->integer('type');
+            $table->integer('priority')->nullable();
+            $table->dateTime('completed_time')->nullable();
+            $table->integer('impact')->nullable();
+            $table->string('impact_detail')->nullable();
+            $table->integer('type')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

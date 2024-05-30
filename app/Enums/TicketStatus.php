@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum TicketStatus: int
 {
-    case Assigned = 1;
-    case InProgress = 2;
-    case Resolved = 3;
-    case Closed = 4;
-    case Cancelled = 5;
+    case Assigned = 0;
+    case InProgress = 1;
+    case Resolved = 2;
+    case Closed = 3;
+    case Cancelled = 4;
 }

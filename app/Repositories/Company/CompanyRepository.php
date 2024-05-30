@@ -24,7 +24,7 @@ class CompanyRepository implements ICompanyRepository
 
     public function paginateByUser($userId, $perPage = 10, $columns = ['*'], $orderBy = 'created_at', $sortBy = 'desc')
     {
-        return Company::where('id', CompanyMember::where('member_id', $userId)->pluck('company_id'))
+        return Company::whereIn('id', CompanyMember::where('member_id', $userId)->pluck('company_id'))
             ->orderBy($orderBy, $sortBy)
             ->paginate($perPage, $columns);
     }

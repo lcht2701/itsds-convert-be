@@ -9,8 +9,15 @@ class UserRepository implements IUserRepository
 {
     public function getOwnerList($columns = ['*'], $orderBy = 'name', $sortBy = 'asc')
     {
-        return User::where("role", UserRole::Manager)
-            ->orWhere("role", UserRole::Technician)
+        return User::whereIn("role", [UserRole::Manager, UserRole::Technician])
+            ->where("is_active", true)
+            ->get($columns);
+    }
+
+    public function getRequesterList($columns = ['*'], $orderBy = 'name', $sortBy = 'asc')
+    {
+        return User::whereIn("role", [UserRole::Customer, UserRole::CompanyAdmin])
+            ->where("is_active", true)
             ->get($columns);
     }
 

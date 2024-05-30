@@ -52,7 +52,7 @@ class TicketController extends Controller
     {
         try {
             $user = Auth::user();
-            Gate::authorize('viewAny', $user);
+            Gate::authorize('viewAny', Ticket::class);
             switch ($user->role) {
                 case UserRole::Customer:
                 case UserRole::CompanyAdmin:
@@ -84,9 +84,9 @@ class TicketController extends Controller
         try {
             Gate::authorize('view', $ticket);
             $result = $this->ticketRepository->find($ticket->id);
-            return $this->sendResponse("Get Company Detail", 200, new TicketResource($result));
+            return $this->sendResponse("Get Ticket Detail", 200, new TicketResource($result));
         } catch (ModelNotFoundException $ex) {
-            return $this->sendNotFound("Company is not exist or already deleted");
+            return $this->sendNotFound("Ticket is not exist or already deleted");
         } catch (Exception $ex) {
             return $this->sendInternalError("Error", $ex->getMessage());
         }

@@ -13,7 +13,7 @@ class UpdateTicketTaskRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,8 +28,8 @@ class UpdateTicketTaskRequest extends FormRequest
             'description' => ['nullable', 'string', 'max:5000'],
             'note' => ['nullable', 'string', 'max:5000'],
             'priority' => ['required', Rule::enum(TaskStatus::class)],
-            'start_time' => ['sometimes', 'required', 'date', 'before:today'],
-            'end_time' => ['sometimes', 'required', 'date', 'before:today'],
+            'start_time' => ['sometimes', 'required', 'date'],
+            'end_time' => ['sometimes', 'nullable', 'date', 'after:today'],
             'progress' => ['sometimes', 'numeric', 'between:0,100'],
             'task_status' => ['sometimes', 'required', Rule::enum(TaskStatus::class)],
 

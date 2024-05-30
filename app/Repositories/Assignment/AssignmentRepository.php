@@ -28,6 +28,6 @@ class AssignmentRepository implements IAssignmentRepository
 
     public function findByTicket($ticketId)
     {
-        return Assignment::where('ticket_id', $ticketId)->firstOrFail();
+        return Assignment::where('ticket_id', $ticketId)->firstOrNew();
     }
 }
