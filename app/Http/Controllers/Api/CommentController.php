@@ -44,7 +44,7 @@ class CommentController extends Controller
             $result = $this->commentRepository->create($data);
             return $this->sendResponse("Comment Created", 200, new CommentResource($result));
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -59,7 +59,7 @@ class CommentController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Comment is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -78,7 +78,7 @@ class CommentController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Comment is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -96,7 +96,7 @@ class CommentController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Comment is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 }

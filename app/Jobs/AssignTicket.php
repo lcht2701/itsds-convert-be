@@ -3,8 +3,10 @@
 namespace App\Jobs;
 
 use App\Enums\TicketStatus;
+use App\Enums\UserRole;
 use App\Models\Assignment;
 use App\Models\Ticket;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -42,20 +44,18 @@ class AssignTicket implements ShouldQueue
 
         // Kiểm tra nếu không có technician nào trong danh sách
         if ($technicians->isEmpty()) {
-            throw new BadRequestException("There's no technicians in the system. Please assign a technician to start ticket assignment process");
+            $selectedTechnicianId = User::random('role', UserRole::Technician)->id;
+        } else {
+            $minCount = $technicians->first()->total;
+
+            // Lọc ra các technician có số lượng phiếu ít nhất
+            $leastBusyTechnicians = $technicians->filter(function ($tech) use ($minCount) {
+                return $tech->total == $minCount;
+            });
+
+            //Random trong danh sách lấy 1 người duy nhất
+            $selectedTechnicianId = $leastBusyTechnicians->random()->technician_id;
         }
-
-        $minCount = $technicians->first()->total;
-
-        // Lọc ra các technician có số lượng phiếu ít nhất
-        $leastBusyTechnicians = $technicians->filter(function ($tech) use ($minCount) {
-            return $tech->total == $minCount;
-        });
-
-        //Random trong danh sách lấy 1 người duy nhất
-        $selectedTechnicianId = $leastBusyTechnicians->random()->technician_id;
-
-
         //Tạo assignment mới
         $newAssignment = Assignment::create([
             'technician_id' => $selectedTechnicianId,

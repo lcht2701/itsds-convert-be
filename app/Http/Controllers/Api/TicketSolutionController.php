@@ -49,7 +49,7 @@ class TicketSolutionController extends Controller
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -64,7 +64,7 @@ class TicketSolutionController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Ticket Solution is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -83,7 +83,7 @@ class TicketSolutionController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Ticket Solution is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -101,7 +101,7 @@ class TicketSolutionController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Ticket Solution is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -116,7 +116,7 @@ class TicketSolutionController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Ticket Solution is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
     public function reject(TicketSolution $ticketSolution)
@@ -130,7 +130,7 @@ class TicketSolutionController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Ticket Solution is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 }

@@ -81,7 +81,7 @@ class UserController extends Controller
         } catch (BadRequestException $e) {
             return $this->sendBadRequest("Bad Request", $e);
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -98,7 +98,7 @@ class UserController extends Controller
         } catch (BadRequestException $e) {
             return $this->sendBadRequest("Bad Request", $e);
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -123,7 +123,7 @@ class UserController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("User is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -141,7 +141,7 @@ class UserController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("User is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -154,7 +154,7 @@ class UserController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("User is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -171,7 +171,7 @@ class UserController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("User is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 }

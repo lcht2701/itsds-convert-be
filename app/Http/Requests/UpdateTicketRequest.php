@@ -29,10 +29,10 @@ class UpdateTicketRequest extends FormRequest
             'service_id' => ['required', 'exists:services,id'],
             'title' => ['required', 'string', 'max:1024'],
             'description' => ['nullable', 'string', 'max:5000'],
-            'priority' => ['required', Rule::enum(Priority::class)],
-            'impact' => ['required', Rule::enum(TicketImpact::class)],
+            'priority' => ['nullable', Rule::enum(Priority::class)],
+            'impact' => ['nullable', Rule::enum(TicketImpact::class)],
             'impact_detail' => ['nullable', 'string', 'max: 5000'],
-            'type' => ['required', Rule::enum(TicketType::class)]
+            'type' => ['nullable', Rule::enum(TicketType::class)]
         ];
     }
 }

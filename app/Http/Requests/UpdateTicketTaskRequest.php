@@ -29,7 +29,7 @@ class UpdateTicketTaskRequest extends FormRequest
             'note' => ['nullable', 'string', 'max:5000'],
             'priority' => ['required', Rule::enum(TaskStatus::class)],
             'start_time' => ['sometimes', 'required', 'date'],
-            'end_time' => ['sometimes', 'nullable', 'date', 'after:today'],
+            'end_time' => ['sometimes', 'nullable', 'date', 'after:start_time'],
             'progress' => ['sometimes', 'numeric', 'between:0,100'],
             'task_status' => ['sometimes', 'required', Rule::enum(TaskStatus::class)],
 

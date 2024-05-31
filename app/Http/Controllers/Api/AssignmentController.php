@@ -27,10 +27,10 @@ class AssignmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function getTechnicians()
+    public function getTechnicians(Ticket $ticket)
     {
         try {
-            Gate::authorize('getTechnician', Auth::user());
+            Gate::authorize('getTechnician', Assignment::class);
             $technicians = $this->assignmentRepository->getTechnicians();
             return $this->sendResponse('Get Technician List', 200, UserResource::collection($technicians));
         } catch (AuthorizationException) {
@@ -50,7 +50,7 @@ class AssignmentController extends Controller
             $data = $request->validated();
             //Kiem tra ticket da duoc phan cong, neu co thi tien hanh xoa de phan cong moi
             $assigment = $this->assignmentRepository->findByTicket($ticket->id);
-            if ($assigment) $this->assignmentRepository->delete($assigment);
+            if ($assigment && $assigment->technician) $this->assignmentRepository->delete($assigment->id);
             //Tao Assignment moi
             $data['ticket_id'] = $ticket->id;
             $result = $this->assignmentRepository->create($data);

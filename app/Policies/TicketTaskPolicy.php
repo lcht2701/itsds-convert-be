@@ -14,7 +14,7 @@ class TicketTaskPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isManager() || $user->isTechnician();
+        return $user->isManager() || $user->isTechnician() || $user->isCustomer() || $user->isCompanyAdmin();
     }
 
     /**
@@ -22,7 +22,7 @@ class TicketTaskPolicy
      */
     public function view(User $user, TicketTask $ticketTask): bool
     {
-        return $user->isManager() || $user->isTechnician();
+        return $user->isManager() || $user->isTechnician() || $user->isCustomer() || $user->isCompanyAdmin();
     }
 
     /**

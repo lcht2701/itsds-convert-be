@@ -74,7 +74,7 @@ class CompanyController extends Controller
         } catch (AuthorizationException $e) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -90,7 +90,7 @@ class CompanyController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Company is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -121,7 +121,7 @@ class CompanyController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Company is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -139,7 +139,7 @@ class CompanyController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Company is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 }

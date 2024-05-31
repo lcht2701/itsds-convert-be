@@ -57,7 +57,7 @@ class ServiceController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Service is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -72,7 +72,7 @@ class ServiceController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("service is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -91,7 +91,7 @@ class ServiceController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Service is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -109,7 +109,7 @@ class ServiceController extends Controller
         } catch (ModelNotFoundException $ex) {
             return $this->sendNotFound("Service is not exist or already deleted");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 }

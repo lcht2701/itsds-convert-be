@@ -3,6 +3,7 @@
 namespace App\Repositories\Ticket;
 
 use App\Enums\ContractStatus;
+use App\Enums\TaskStatus;
 use App\Enums\TicketStatus;
 use App\Models\Assignment;
 use App\Models\CompanyMember;
@@ -106,11 +107,14 @@ class TicketRepository implements ITicketRepository
                 $ticket->ticketStatus = TicketStatus::Resolved;
                 break;
             case TicketStatus::Resolved:
-                $tasksCount = TicketTask::where('ticket_id', $ticket->id)->count();
+                $tasksCount = TicketTask::where('ticket_id', $ticket->id)
+                    ->whereNotIn('task_status', [TaskStatus::Closed, TaskStatus::Cancelled])
+                    ->count();
                 if ($tasksCount > 0) {
                     throw new BadRequestHttpException('All tasks must be completed before being resolved!!!');
                 } else {
                     $ticket->ticketStatus = TicketStatus::Closed;
+                    $ticket->completed_time = now();
                 }
                 break;
         }
@@ -121,7 +125,8 @@ class TicketRepository implements ITicketRepository
     public function cancelTicket($id)
     {
         $ticket = Ticket::findOrFail($id);
-        $ticket['ticketStatus'] = TicketStatus::Cancelled;
+        $ticket->ticketStatus = TicketStatus::Cancelled;
+        $ticket->completed_time = now();
         $ticket->save();
         return $ticket;
     }

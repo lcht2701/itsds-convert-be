@@ -15,6 +15,7 @@ use App\Http\Resources\TicketResource;
 use App\Jobs\AssignTicket;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Repositories\Assignment\IAssignmentRepository;
 use App\Repositories\Ticket\ITicketRepository;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -26,10 +27,12 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class TicketController extends Controller
 {
     protected $ticketRepository;
+    protected $assignmentRepository;
 
-    public function __construct(ITicketRepository $ticketRepository)
+    public function __construct(ITicketRepository $ticketRepository, IAssignmentRepository $assignmentRepository)
     {
         $this->ticketRepository = $ticketRepository;
+        $this->assignmentRepository = $assignmentRepository;
     }
 
     /**
@@ -101,14 +104,14 @@ class TicketController extends Controller
             Gate::authorize('createByCustomer', Ticket::class);
             $data = $request->validated();
             $data['requester_id'] = Auth::user()->id;
-            //Create a job to auto assign
-            $data['ticketStatus'] = TicketStatus::Assigned;
-            $result = $this->ticketRepository->create($data);
-            return $this->sendResponse("Ticket Created", 200, new TicketResource($result));
+            $ticket = $this->ticketRepository->create($data);
+            $assignment = $this->assignmentRepository->assign($ticket->id);
+            if ($assignment)
+                return $this->sendResponse("Ticket Created and Assigned", 200, new TicketResource($ticket));
         } catch (AuthorizationException) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 
@@ -157,13 +160,14 @@ class TicketController extends Controller
         try {
             Gate::authorize('create', Ticket::class);
             $data = $request->validated();
-            $result = $this->ticketRepository->create($data);
-            AssignTicket::dispatch($result);
-            return $this->sendResponse("Ticket Created and Assigned", 200, new TicketResource($result));
+            $ticket = $this->ticketRepository->create($data);
+            $assignment = $this->assignmentRepository->assign($ticket->id);
+            if ($assignment)
+                return $this->sendResponse("Ticket Created and Assigned", 200, new TicketResource($ticket));
         } catch (AuthorizationException) {
             return $this->sendUnauthorized("You do not have permission to do this action");
         } catch (Exception $ex) {
-            return $this->sendInternalError("Error", $ex);
+            return $this->sendInternalError("Error", $ex->getMessage());
         }
     }
 

@@ -20,7 +20,7 @@ class AssignmentPolicy
      */
     public function view(User $user, Assignment $assignment): bool
     {
-        return $user->isManager();
+        return $user->isManager() || $user->isTechnician() || $user->isCustomer() || $user->isCompanyAdmin();
     }
 
     /**
