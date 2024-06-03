@@ -44,6 +44,8 @@ use App\Repositories\CompanyMember\CompanyMemberRepository;
 use App\Repositories\CompanyMember\ICompanyMemberRepository;
 use App\Repositories\Contract\ContractRepository;
 use App\Repositories\Contract\IContractRepository;
+use App\Repositories\Dashboard\DashboardRepository;
+use App\Repositories\Dashboard\IDashboardRepository;
 use App\Repositories\File\FileRepository;
 use App\Repositories\File\IFileRepository;
 use App\Repositories\Reaction\IReactionRepository;
@@ -87,6 +89,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ITicketRepository::class, TicketRepository::class);
         $this->app->bind(ITicketTaskRepository::class, TicketTaskRepository::class);
         $this->app->bind(IAssignmentRepository::class, AssignmentRepository::class);
+        $this->app->bind(IDashboardRepository::class, DashboardRepository::class);
     }
 
     /**
