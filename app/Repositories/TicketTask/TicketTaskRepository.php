@@ -44,13 +44,16 @@ class TicketTaskRepository implements ITicketTaskRepository
         switch ($newStatus) {
             case TaskStatus::Closed: {
                     $ticketTask->progress = 100;
+                    $ticketTask->end_time = now();
                     break;
                 }
             case TaskStatus::Cancelled: {
                     $ticketTask->progress = 0;
+                    $ticketTask->end_time = now();
                     break;
                 }
             default: {
+                    $ticketTask->end_time = null;
                     break;
                 }
         }
