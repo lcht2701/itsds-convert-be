@@ -2,6 +2,7 @@
 
 namespace App\Repositories\TicketTask;
 
+use App\Enums\TaskStatus;
 use App\Models\TicketTask;
 
 class TicketTaskRepository implements ITicketTaskRepository
@@ -40,6 +41,19 @@ class TicketTaskRepository implements ITicketTaskRepository
     {
         $ticketTask = TicketTask::findOrFail($id);
         $ticketTask->task_status = $newStatus;
+        switch ($newStatus) {
+            case TaskStatus::Closed: {
+                    $ticketTask->progress = 100;
+                    break;
+                }
+            case TaskStatus::Cancelled: {
+                    $ticketTask->progress = 0;
+                    break;
+                }
+            default: {
+                    break;
+                }
+        }
         $ticketTask->save();
         return $ticketTask;
     }
