@@ -24,22 +24,22 @@ class DashboardRepository implements IDashboardRepository
         // TODO: Implement GetCustomerTicketDashboard() method.
         $num_new_tickets = Ticket::where('requester_id', $userId)
             ->whereDate('created_at', today())
-            ->count();
+            ->count() || 0;
         $num_progressing_tickets = Ticket::where('requester_id', $userId)
             ->whereNotIn('ticketStatus', [TicketStatus::Closed, TicketStatus::Cancelled])
-            ->count();
+            ->count() || 0;
         $total_completed_tickets = Ticket::where('requester_id', $userId)
             ->where('ticketStatus', TicketStatus::Closed)
-            ->count();
+            ->count() || 0;
         $total_cancel_tickets = Ticket::where('requester_id', $userId)
             ->where('ticketStatus', TicketStatus::Cancelled)
-            ->count();
+            ->count() || 0;
         $count_tickets_month = Ticket::where('requester_id', $userId)
             ->whereMonth('created_at', today()->month)
-            ->count();
+            ->count() || 0;
         $count_tickets_last_month = Ticket::where('requester_id', $userId)
             ->whereMonth('created_at', today()->subMonthNoOverflow()->month)
-            ->count();
+            ->count() || 0;
         $count_tickets_month_percentage = Number::percentage($count_tickets_month / $count_tickets_last_month * 100 - 100, 1);
         $recent_tickets = Ticket::where('requester_id', $userId)
             ->orderByDesc('created_at')
@@ -72,7 +72,7 @@ class DashboardRepository implements IDashboardRepository
                     ->from('company_members')
                     ->where('company_id', $companyId);
             })
-            ->count();
+                ->count() || 0;
         $num_company_progressing_tickets =
             Ticket::whereIn('requester_id', function ($query) use ($companyId) {
                 $query
@@ -80,8 +80,8 @@ class DashboardRepository implements IDashboardRepository
                     ->from('company_members')
                     ->where('company_id', $companyId);
             })
-            ->whereNotIn('ticketStatus', [TicketStatus::Closed, TicketStatus::Cancelled])
-            ->count();
+                ->whereNotIn('ticketStatus', [TicketStatus::Closed, TicketStatus::Cancelled])
+                ->count() || 0;
         $total_company_completed_tickets =
             Ticket::whereIn('requester_id', function ($query) use ($companyId) {
                 $query
@@ -89,8 +89,8 @@ class DashboardRepository implements IDashboardRepository
                     ->from('company_members')
                     ->where('company_id', $companyId);
             })
-            ->where('ticketStatus', TicketStatus::Closed)
-            ->count();
+                ->where('ticketStatus', TicketStatus::Closed)
+                ->count() || 0;
         $total_company_cancelled_tickets =
             Ticket::whereIn('requester_id', function ($query) use ($companyId) {
                 $query
@@ -98,12 +98,12 @@ class DashboardRepository implements IDashboardRepository
                     ->from('company_members')
                     ->where('company_id', $companyId);
             })
-            ->where('ticketStatus', TicketStatus::Cancelled)
-            ->count();
+                ->where('ticketStatus', TicketStatus::Cancelled)
+                ->count() || 0;
         $company_members = CompanyMember::where('company_id', $companyId)->count();
         $active_contracts = Contract::where('company_id', $companyId)
             ->where('status', ContractStatus::Active)
-            ->count();
+            ->count() || 0;
         $recent_company_tickets =
             Ticket::whereIn('requester_id', function ($query) use ($companyId) {
                 $query
@@ -111,9 +111,9 @@ class DashboardRepository implements IDashboardRepository
                     ->from('company_members')
                     ->where('company_id', $companyId);
             })
-            ->orderByDesc('created_at')
-            ->take(5)
-            ->get();
+                ->orderByDesc('created_at')
+                ->take(5)
+                ->get();
         $recent_ticket_solutions = TicketSolution::orderByDesc('created_at')->take(5)->get();
 
         $result = [
@@ -140,7 +140,7 @@ class DashboardRepository implements IDashboardRepository
                 ->where('technician_id', $userId);
         })
             ->where('ticketStatus', TicketStatus::Assigned)
-            ->count();
+            ->count() || 0;
         $current_progressing_tickets = Ticket::whereIn('id', function ($query) use ($userId) {
             $query
                 ->select('ticket_id')
@@ -148,7 +148,7 @@ class DashboardRepository implements IDashboardRepository
                 ->where('technician_id', $userId);
         })
             ->whereIn('ticketStatus', [TicketStatus::InProgress, TicketStatus::Resolved])
-            ->count();
+            ->count() || 0;
         $total_completed_tickets = Ticket::whereIn('id', function ($query) use ($userId) {
             $query
                 ->select('ticket_id')
@@ -156,7 +156,7 @@ class DashboardRepository implements IDashboardRepository
                 ->where('technician_id', $userId);
         })
             ->where('ticketStatus', TicketStatus::Closed)
-            ->count();
+            ->count() || 0;
         $total_cancel_tickets = Ticket::whereIn('id', function ($query) use ($userId) {
             $query
                 ->select('ticket_id')
@@ -164,7 +164,7 @@ class DashboardRepository implements IDashboardRepository
                 ->where('technician_id', $userId);
         })
             ->where('ticketStatus', TicketStatus::Cancelled)
-            ->count();
+            ->count() || 0;
 
         $new_tickets_current_month = Ticket::whereIn('id', function ($query) use ($userId) {
             $query
@@ -173,7 +173,7 @@ class DashboardRepository implements IDashboardRepository
                 ->where('technician_id', $userId);
         })
             ->whereMonth('created_at', today()->month)
-            ->count();
+            ->count() || 0;
         $new_tickets_last_month = Ticket::whereIn('id', function ($query) use ($userId) {
             $query
                 ->select('ticket_id')
@@ -181,7 +181,7 @@ class DashboardRepository implements IDashboardRepository
                 ->where('technician_id', $userId);
         })
             ->whereMonth('created_at', today()->subMonthNoOverflow()->month)
-            ->count();
+            ->count() || 0;
         $percentage_tickets_month = Number::percentage($new_tickets_current_month / $new_tickets_last_month * 100 - 100, 1);
 
         $num_solutions_owned = TicketSolution::where('owner_id', $userId)
@@ -193,7 +193,7 @@ class DashboardRepository implements IDashboardRepository
                     ->from('ticket_solutions')
                     ->where('owner_id', $userId);
             })
-            ->count();
+            ->count() || 0;
         $num_comments_today = Comment::whereDate('created_at', today())
             ->whereIn('ticket_solution_id', function ($query) use ($userId) {
                 $query
@@ -201,7 +201,7 @@ class DashboardRepository implements IDashboardRepository
                     ->from('ticket_solutions')
                     ->where('owner_id', $userId);
             })
-            ->count();
+            ->count() || 0;
 
         $available_tickets = Ticket::whereIn('id', function ($query) use ($userId) {
             $query
@@ -231,7 +231,7 @@ class DashboardRepository implements IDashboardRepository
             'new_tickets_month' => $new_tickets_current_month,
             'new_tickets_month_percentage' => $percentage_tickets_month,
             'num_solutions_owned' => $num_solutions_owned,
-            'num_actions_today' => $num_reactions_today + $num_comments_today,
+            'num_actions_today' => ($num_reactions_today + $num_comments_today),
             'available_tickets' => TicketResource::collection($available_tickets),
             'recent_solved_tickets' => TicketResource::collection($recent_solved_tickets),
         ];
@@ -241,22 +241,22 @@ class DashboardRepository implements IDashboardRepository
     public function GetManagerDashboard()
     {
         // Fetch counts for the current month
-        $count_tickets_current_month = Ticket::whereMonth('created_at', today()->month)->count();
-        $count_solutions_current_month = TicketSolution::whereMonth('created_at', today()->month)->count();
-        $count_contracts_current_month = Contract::whereMonth('created_at', today()->month)->count();
-        $count_active_users_current_month = User::whereMonth('created_at', today()->month)->count();
+        $count_tickets_current_month = Ticket::whereMonth('created_at', today()->month)->count() || 0;
+        $count_solutions_current_month = TicketSolution::whereMonth('created_at', today()->month)->count() || 0;
+        $count_contracts_current_month = Contract::whereMonth('created_at', today()->month)->count() || 0;
+        $count_active_users_current_month = User::whereMonth('created_at', today()->month)->count() || 0;
 
         // Fetch counts for the previous month
-        $count_tickets_last_month = Ticket::whereMonth('created_at', today()->subMonthNoOverflow()->month)->count();
-        $count_solutions_last_month = TicketSolution::whereMonth('created_at', today()->subMonthNoOverflow()->month)->count();
-        $count_contracts_last_month = Contract::whereMonth('created_at', today()->subMonthNoOverflow()->month)->count();
-        $count_active_users_last_month = User::whereMonth('created_at', today()->subMonthNoOverflow()->month)->count();
+        $count_tickets_last_month = Ticket::whereMonth('created_at', today()->subMonthNoOverflow()->month)->count() || 0;
+        $count_solutions_last_month = TicketSolution::whereMonth('created_at', today()->subMonthNoOverflow()->month)->count() || 0;
+        $count_contracts_last_month = Contract::whereMonth('created_at', today()->subMonthNoOverflow()->month)->count() || 0;
+        $count_active_users_last_month = User::whereMonth('created_at', today()->subMonthNoOverflow()->month)->count() || 0;
 
         // Calculate percentages, handling division by zero
-        $percentage_tickets_month = Number::percentage($count_tickets_current_month / $count_tickets_last_month * 100 - 100, 1);
-        $percentage_solutions_month = Number::percentage($count_solutions_current_month / $count_solutions_last_month * 100 - 100, 1);
-        $percentage_contracts_month = Number::percentage($count_contracts_current_month / $count_contracts_last_month * 100 - 100, 1);
-        $percentage_active_users_month = Number::percentage($count_active_users_current_month / $count_active_users_last_month * 100 - 100, 1);
+        $percentage_tickets_month = Number::percentage($count_tickets_current_month / $count_tickets_last_month * 100 - 100, 1) || 0;
+        $percentage_solutions_month = Number::percentage($count_solutions_current_month / $count_solutions_last_month * 100 - 100, 1) || 0;
+        $percentage_contracts_month = Number::percentage($count_contracts_current_month / $count_contracts_last_month * 100 - 100, 1) || 0;
+        $percentage_active_users_month = Number::percentage($count_active_users_current_month / $count_active_users_last_month * 100 - 100, 1) || 0;
 
         // Fetch recent tickets and new users
         $recent_tickets = Ticket::orderByDesc('created_at')->take(5)->get();
